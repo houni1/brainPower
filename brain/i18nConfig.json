@@ -1,0 +1,10 @@
+{
+  "zh": {
+    "txt": "网田科技",
+    "hello": "你好 {name}"
+  },
+  "en": {
+    "txt": "Hello,Wangtiansoft",
+    "hello": "hello {name}"
+  }
+}
