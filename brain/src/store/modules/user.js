@@ -18,16 +18,6 @@ const actions = {
         reject(error)
       })
     })
-  },
-//   首页开关
-  userswitchon: function ({commit}, data) {
-    return new Promise((resolve, reject) => {
-      API.userswitchon(data).then((res) => {
-        resolve(res.data)
-      }, (error) => {
-        reject(error)
-      })
-    })
   }
 }
 

@@ -15,7 +15,7 @@
               <img class="pic" src="../assets/images/home/icon_a.png" alt="">
             </p>
           </div>
-          <div class="warmList">
+          <!-- <div class="warmList">
             <div class="warm_item outdoor">
               <p class="txt">室外环境</p>
               <p class="num">
@@ -61,10 +61,11 @@
                 <span class="unit">%</span>
               </p>
             </div>
-          </div>
+          </div> -->
+          <warmList></warmList>
         </div>
       </div>
-      <div class="family">
+      <!-- <div class="family">
         <div class="titleBox" @click="toElecount">
           <p class="titleTxt">家庭能效</p>
           <p class="titlePic">
@@ -97,8 +98,9 @@
             </p>
           </div>
         </div>
-      </div>
-      <div class="wiringList">
+      </div> -->
+      <family></family>
+      <!-- <div class="wiringList">
         <div class="titleBox">
           <p class="titleTxt">我的电器</p>
         </div>
@@ -122,15 +124,22 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
+      <wiringList></wiringList>
     </div>
   </div>
 </template>
 
 <script>
+import warmList from '../components/Home/warmList.vue'
+import family from '../components/Home/family.vue'
+import wiringList from '../components/Home/wiringList.vue'
 export default {
   name: 'Home',
   components: {
+    warmList,
+    family,
+    wiringList
   },
   data () {
     return {
@@ -172,42 +181,30 @@ export default {
    * 生命周期函数--keep-alive 组件激活时调用
    */
   activated: function () {
-    let _this = this
-    let param = {}
-    this.$store.dispatch('userhome', param).then(function (res) {
-      // console.log(res[0].Val)
-      let dataJson = JSON.parse(res[0].Val)
-      _this.data = dataJson
-    })
+    // let _this = this
+    // let param = {}
+    // this.$store.dispatch('userhome', param).then(function (res) {
+    //   // console.log(res[0].Val)
+    //   let dataJson = JSON.parse(res[0].Val)
+    //   _this.data = dataJson
+    // })
   },
   /**
    * 组件内方法
    */
   methods: {
-    toElecount () {
-      this.$router.push('/elecount')
-    },
-    toEleDetail () {
-      this.$router.push('/eleDetails')
-    },
     scan () {
-      this.$router.push('/sweepcode')
-    },
-    isopenBtn (flag) {
-      if (this.isopen) {
-        this.isopen = false
-      } else {
-        this.isopen = true
-      }
-      if (flag == 'on') {
-        console.log('on')
-        // let param = {}
-        // this.$store.dispatch('userswitchon', param).then(function (res) {
-        //   console.log(res)
-        // })
-      } else if (flag == 'off') {
-        console.log('off')
-      }
+      console.log('点击扫描按钮')
+      // this.$router.push('/sweepcode')
+      var dsBridge = require('dsbridge')
+      console.log(dsBridge)
+      dsBridge.call('startScan', 'startScan', function (v) {
+        alert(v)
+      })
+      dsBridge.register('addValue', function (l, r) {
+        console.log('l+r')
+        console.log(l + r)
+      })
     }
   },
   /**
