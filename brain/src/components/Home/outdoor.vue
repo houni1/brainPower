@@ -2,15 +2,15 @@
   <div class="warm_item outdoor" id="outdoor">
     <p class="txt">室外环境</p>
     <p class="num">
-        <span class="number">32</span>
+        <span class="number">{{outdoor.temp}}</span>
         <span class="unit">℃</span>
     </p>
-    <p class="air">空气质量 22</p>
-    <p class="pic" v-if="22 <= 50">
+    <p class="air">空气质量 {{outdoor.pm}}</p>
+    <p class="pic" v-if="outdoor.pm <= 50">
         <img src="../../assets/images/home/label_good.png" alt="">
         <span class="picTxt">良</span>
     </p>
-    <p class="pic" v-else-if="50 < 22 <= 100">
+    <p class="pic" v-else-if="50 < outdoor.pm <= 100">
         <img src="../../assets/images/home/label_comfortable.png" alt="">
         <span class="picTxt">舒适</span>
     </p>
@@ -22,7 +22,23 @@
 
 <script>
 export default {
-  name: 'outdoor'
+  name: 'outdoor',
+  data () {
+    return {
+      outdoor: {}
+    }
+  },
+  activated: function () {
+    let _this = this
+    let param = {
+      regionId: '320101'
+      // regionId: '320102'
+    }
+    this.$store.dispatch('outdoor', param).then(function (res) {
+      console.log(res.list)
+      _this.outdoor = res.list[0]
+    })
+  }
 }
 </script>
 
@@ -61,16 +77,23 @@ export default {
       .picTxt {
         display: inline-block;
         width: 100%;
-        height: 14px;
+        height: 100%;
         position: absolute;
         left: 0;
-        top: 1px;
+        top: 50%;
+        margin-top: -7px;
         font-size: 10px;
         line-height: 14px;
+        vertical-align: middle;
       }
       img {
+        width: 45px;
         height: 100%;
-        display: inline-block;
+        display: block;
+        position: absolute;
+        left: 50%;
+        margin-left: -22.5px;
+        top: 0;
       }
     }
   }

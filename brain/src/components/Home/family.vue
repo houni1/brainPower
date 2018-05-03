@@ -15,7 +15,7 @@
                 <span class="ele_txt">本月已使用电量</span>
             </p>
             <p class="ele_num">
-                <span class="ele_number">32</span>
+                <span class="ele_number">{{family.monthlyElecSum}}</span>
                 <span class="ele_unit">度</span>
             </p>
             </div>
@@ -27,7 +27,7 @@
                 <span class="ele_txt">今日已使用电量</span>
             </p>
             <p class="ele_num">
-                <span class="ele_number">45</span>
+                <span class="ele_number">{{family.dailyElecSum}}</span>
                 <span class="ele_unit">度</span>
             </p>
             </div>
@@ -38,6 +38,21 @@
 <script>
 export default {
   name: 'family',
+  data () {
+    return {
+      family: {}
+    }
+  },
+  activated: function () {
+    let _this = this
+    let param = {
+      terminalId: '888'
+    }
+    this.$store.dispatch('family', param).then(function (res) {
+      console.log(res)
+      _this.family = res.list[0]
+    })
+  },
   methods: {
     toElecount () {
       this.$router.push('/elecount')

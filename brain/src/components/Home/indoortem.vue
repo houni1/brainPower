@@ -2,15 +2,15 @@
   <div class="warm_item indoortem" id="indoortem">
     <p class="txt">室内温度</p>
     <p class="num">
-        <span class="number">33</span>
+        <span class="number">{{indoortem.temp}}</span>
         <span class="unit">℃</span>
     </p>
-    <p class="air">空气质量 23</p>
-    <p class="pic" v-if="23 <= 50">
+    <p class="air">空气质量 {{indoortem.pm}}</p>
+    <p class="pic" v-if="indoortem.pm <= 50">
         <img src="../../assets/images/home/label_good.png" alt="">
         <span class="picTxt">良</span>
     </p>
-    <p class="pic" v-else-if="50 < 23 <= 100">
+    <p class="pic" v-else-if="50 < indoortem.pm <= 100">
         <img src="../../assets/images/home/label_comfortable.png" alt="">
         <span class="picTxt">舒适</span>
     </p>
@@ -22,7 +22,22 @@
 
 <script>
 export default {
-  name: 'indoortem'
+  name: 'indoortem',
+  data () {
+    return {
+      indoortem: {}
+    }
+  },
+  activated: function () {
+    let _this = this
+    let param = {
+      terminalId: '888'
+    }
+    this.$store.dispatch('indoortem', param).then(function (res) {
+      console.log(res.list[0])
+      _this.indoortem = res.list[0]
+    })
+  }
 }
 </script>
 

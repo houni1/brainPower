@@ -62,8 +62,8 @@ const actions = {
   // 设备详情
   eledetail: function ({commit}, data) {
     return new Promise((resolve, reject) => {
-      API.wiringList(data).then((res) => {
-        resolve(res.data)
+      API.eledetail(data).then((res) => {
+        resolve(res)
       }, (error) => {
         reject(error)
       })

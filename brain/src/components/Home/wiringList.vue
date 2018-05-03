@@ -1,28 +1,28 @@
 <template>
     <div class="wiringList" id="wiringList">
-        <div class="titleBox">
-            <p class="titleTxt">我的电器</p>
+      <div class="titleBox">
+          <p class="titleTxt">我的电器</p>
+      </div>
+      <div class="wiringBox">
+        <div class="wiring_item" v-for="(item, index) in deviceDataList" :key="index" @click="toEleDetail(item.id)">
+          <div class="wiring_icon">
+            <img src="../../assets/images/home/icon_jiashiqi.png" alt="">
+          </div>
+          <div class="wiring_cont">
+            <p class="wiring_name">{{item.name}}({{item.roomName}})</p>
+            <p class="wiring_power">当前功率：{{item.currentPower}}W</p>
+          </div>
+          <div class="wiring_rightBox">
+            <div class="wiring_btn" @click.stop="isopenBtn(item.swicthStatus)">
+              <img v-if="item.swicthStatus == '1'" src="../../assets/images/home/icon_switch.png" alt="">
+              <img v-else-if="item.swicthStatus == '0'" src="../../assets/images/home/icon_switch_nor.png" alt="">
+            </div>
+            <div class="wiring_right">
+              <img src="../../assets/images/home/icon_arrow.png" alt="">
+            </div>
+          </div>
         </div>
-        <div class="wiringBox">
-            <div class="wiring_item" v-for="(item, index) in deviceDataList" :key="index" @click="toEleDetail">
-            <div class="wiring_icon">
-                <img src="../../assets/images/home/icon_jiashiqi.png" alt="">
-            </div>
-            <div class="wiring_cont">
-                <p class="wiring_name">{{item.name}}</p>
-                <p class="wiring_power">当前功率：{{item.currentPower}}W</p>
-            </div>
-            <div class="wiring_rightBox">
-                <div class="wiring_btn" @click.stop="isopenBtn(item.switch)">
-                <img v-if="item.switch == 'on'" src="../../assets/images/home/icon_switch.png" alt="">
-                <img v-else-if="item.switch == 'off'" src="../../assets/images/home/icon_switch_nor.png" alt="">
-                </div>
-                <div class="wiring_right">
-                <img src="../../assets/images/home/icon_arrow.png" alt="">
-                </div>
-            </div>
-            </div>
-        </div>
+      </div>
     </div>
 </template>
 
@@ -31,37 +31,34 @@ export default {
   name: 'wiringList',
   data () {
     return {
-      deviceDataList: [
-        {
-          name: '空调(客厅)',
-          currentPower: '34',
-          switch: 'on'
-        },
-        {
-          name: '空调(卧室)',
-          currentPower: '34',
-          switch: 'off'
-        }
-      ]
+      deviceDataList: []
     }
   },
+  activated: function () {
+    let _this = this
+    let param = {
+      terminalId: '888'
+      // terminalId: '999'
+    }
+    this.$store.dispatch('wiringList', param).then(function (res) {
+      console.log(res.list)
+      _this.deviceDataList = res.list
+    })
+  },
   methods: {
-    toEleDetail () {
-      this.$router.push('/eleDetails')
+    toEleDetail (deviceId) {
+      console.log(deviceId)
+      console.log('toeledetails')
+      this.$router.push({name: 'eleDetails', params: { deviceId: deviceId }})
     },
     isopenBtn (flag) {
-      if (this.isopen) {
-        this.isopen = false
-      } else {
-        this.isopen = true
-      }
-      if (flag == 'on') {
+      if (flag == '1') {
         console.log('on')
         // let param = {}
         // this.$store.dispatch('userswitchon', param).then(function (res) {
         //   console.log(res)
         // })
-      } else if (flag == 'off') {
+      } else if (flag == '0') {
         console.log('off')
       }
     }

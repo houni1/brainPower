@@ -2,7 +2,7 @@
   <div class="warm_item indoorhumidity">
     <p class="txt">室内湿度</p>
     <p class="num">
-        <span class="number">45</span>
+        <span class="number">{{indoortem.rh}}</span>
         <span class="unit">%</span>
     </p>
   </div>
@@ -10,7 +10,22 @@
 
 <script>
 export default {
-  name: 'indoorhumidity'
+  name: 'indoorhumidity',
+  data () {
+    return {
+      indoortem: {}
+    }
+  },
+  activated: function () {
+    let _this = this
+    let param = {
+      terminalId: '888'
+    }
+    this.$store.dispatch('indoortem', param).then(function (res) {
+      console.log(res.list[0])
+      _this.indoortem = res.list[0]
+    })
+  }
 }
 </script>
 

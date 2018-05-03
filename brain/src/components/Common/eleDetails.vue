@@ -5,14 +5,18 @@
     </Headers>
     <div class="contBox">
       <div class="box">
-        <p class="title">加湿器智能插座</p>
-        <p class="state">
+        <p class="title">{{deviceDetail.name}}</p>
+        <p class="state" v-if="deviceDetail.onlineStatus == '0'">
           <img src="../../assets/images/eledetails/icon_operation.png" alt="">
-          <span class="stateTxt">运行中</span>
+          <span class="stateTxt">在线</span>
         </p>
-        <p class="switch" @click="isopenBtn">
-          <img v-if="isopen" src="../../assets/images/eledetails/switch_open.png" alt="">
-          <img v-else src="../../assets/images/eledetails/switch_close.png" alt="">
+        <p class="state" v-else-if="deviceDetail.onlineStatus == '1'">
+          <img src="../../assets/images/eledetails/icon_operation_nor.png" alt="">
+          <span class="stateTxt">离线</span>
+        </p>
+        <p class="switch" @click="isopenBtn(deviceDetail.swicthStatus)">
+          <img v-if="deviceDetail.swicthStatus == '1'" src="../../assets/images/eledetails/switch_open.png" alt="">
+          <img v-else-if="deviceDetail.swicthStatus == '0'" src="../../assets/images/eledetails/switch_close.png" alt="">
         </p>
         <div class="infoBox">
           <p class="info_title">
@@ -21,27 +25,27 @@
           <ul class="info_list">
             <li class="list_item">
               <span class="list_name">房间</span>
-              <span class="list_cont">卧室</span>
+              <span class="list_cont">{{deviceDetail.roomName}}</span>
             </li>
             <li class="list_item">
               <span class="list_name">设备名称</span>
-              <span class="list_cont">空调</span>
+              <span class="list_cont">{{deviceDetail.name}}</span>
             </li>
             <li class="list_item">
               <span class="list_name">当前功率</span>
-              <span class="list_cont">30W</span>
+              <span class="list_cont">{{deviceDetail.currentPower}}W</span>
             </li>
             <li class="list_item">
               <span class="list_name">电流</span>
-              <span class="list_cont">5A</span>
+              <span class="list_cont">{{deviceDetail.elecCurrent}}A</span>
             </li>
             <li class="list_item">
               <span class="list_name">今日用电量</span>
-              <span class="list_cont"><label class="color">10</label> 度</span>
+              <span class="list_cont"><label class="color">{{deviceDetail.dailyElecSum}}</label> 度</span>
             </li>
             <li class="list_item">
               <span class="list_name">历史总用电量</span>
-              <span class="list_cont"><label class="color">1000</label> 度</span>
+              <span class="list_cont"><label class="color">{{deviceDetail.accElecSum}}</label> 度</span>
             </li>
           </ul>
         </div>
@@ -56,20 +60,37 @@ export default {
   data () {
     return {
       title: '电器详情',
-      isopen: true
+      isopen: true,
+      deviceId: '',
+      deviceDetail: {}
     }
   },
   components: {
     Headers
   },
+  created () {
+    console.log('getparams')
+    console.log(this.$route.params)
+  },
+  activated: function () {
+    let _this = this
+    _this.deviceId = this.$route.params.deviceId
+    let param = {
+      deviceId: _this.deviceId
+    }
+    console.log(param)
+    this.$store.dispatch('eledetail', param).then(function (res) {
+      console.log(res.data.list[0])
+      _this.deviceDetail = res.data.list[0]
+    })
+  },
   methods: {
-    isopenBtn () {
-      if (this.isopen) {
-        this.isopen = false
-      } else {
-        this.isopen = true
+    isopenBtn (flag) {
+      if (flag == '1') {
+        console.log('on')
+      } else if (flag == '0') {
+        console.log('off')
       }
-      console.log(this.isopen)
     }
   }
 }
@@ -85,6 +106,7 @@ export default {
   .box {
     width: 100%;
     height: 100%;
+    overflow-y: scroll;
     background: #fff;
     border-radius: 5px;
     padding-left: 25px;

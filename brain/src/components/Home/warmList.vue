@@ -1,53 +1,8 @@
 <template>
   <div id="warmList">
     <div class="warmList">
-      <!-- <div class="warm_item outdoor">
-        <p class="txt">室外环境</p>
-        <p class="num">
-          <span class="number">32</span>
-          <span class="unit">℃</span>
-        </p>
-        <p class="air">空气质量 22</p>
-        <p class="pic" v-if="22 <= 50">
-          <img src="../../assets/images/home/label_good.png" alt="">
-          <span class="picTxt">良</span>
-        </p>
-        <p class="pic" v-else-if="50 < 22 <= 100">
-          <img src="../../assets/images/home/label_comfortable.png" alt="">
-          <span class="picTxt">舒适</span>
-        </p>
-        <p class="pic" v-else>
-          <span class="picTxt">差</span>
-        </p>
-      </div> -->
       <outdoor></outdoor>
-      <!-- <div class="warm_item indoortem">
-        <p class="txt">室内温度</p>
-        <p class="num">
-          <span class="number">33</span>
-          <span class="unit">℃</span>
-        </p>
-        <p class="air">空气质量 23</p>
-        <p class="pic" v-if="23 <= 50">
-          <img src="../../assets/images/home/label_good.png" alt="">
-          <span class="picTxt">良</span>
-        </p>
-        <p class="pic" v-else-if="50 < 23 <= 100">
-          <img src="../../assets/images/home/label_comfortable.png" alt="">
-          <span class="picTxt">舒适</span>
-        </p>
-        <p class="pic" v-else>
-          <span class="picTxt">差</span>
-        </p>
-      </div> -->
       <indoortem></indoortem>
-      <!-- <div class="warm_item indoorhumidity">
-        <p class="txt">室内湿度</p>
-        <p class="num">
-          <span class="number">45</span>
-          <span class="unit">%</span>
-        </p>
-      </div> -->
       <indoorhumidity></indoorhumidity>
     </div>
   </div>
