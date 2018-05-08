@@ -29,6 +29,16 @@ import myfeedback from '../components/Mine/Myfeedback.vue'
 import about from '../components/Mine/about.vue'
 // 登录
 import Login from '@/components/Login/Login.vue'
+// 找回密码1
+import getpassone from '@/components/Login/getpassone.vue'
+// 找回密码2
+import getpasstwo from '@/components/Login/getpasstwo.vue'
+// 新用户注册1
+import registerone from '@/components/Login/registerone.vue'
+// 新用户注册2
+import registertwo from '@/components/Login/registertwo.vue'
+// 新用户注册3
+import registerthree from '@/components/Login/registerthree.vue'
 // 路由懒加载
 const Explain = (resolve) => {
   import('@/modules/Explain.vue').then((module) => {
@@ -65,6 +75,26 @@ const routes = [{
   name: 'Login',
   path: '/login',
   component: Login
+}, {
+  name: 'getpassone',
+  path: '/getpassone',
+  component: getpassone
+}, {
+  name: 'getpasstwo',
+  path: '/getpasstwo',
+  component: getpasstwo
+}, {
+  name: 'registerone',
+  path: '/registerone',
+  component: registerone
+}, {
+  name: 'registertwo',
+  path: '/registertwo',
+  component: registertwo
+}, {
+  name: 'registerthree',
+  path: '/registerthree',
+  component: registerthree
 }, {
   name: 'elecount',
   path: '/elecount',

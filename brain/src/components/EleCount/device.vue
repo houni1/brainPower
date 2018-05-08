@@ -1,6 +1,6 @@
 <template>
   <div id="device">
-    设备设备设备{{index}}
+    <!-- 设备设备设备{{index}} -->
     <div class="buttonTab">
       <div class="btnBox">
         <p class="btn_item">

@@ -6,17 +6,17 @@
     <div class="contBox">
       <p class="item phone">
         <span class="title">新手机号</span>
-        <input class="inp inp_phone" type="text">
-        <span class="yzmbtn">获取验证码</span>
+        <input class="inp inp_phone" v-model="phone" type="text">
+        <span class="yzmbtn" @click="getCode">获取验证码</span>
       </p>
       <p class="item yanzm">
         <span class="title">验证码</span>
-        <input class="inp" type="text" placeholder="请输入验证码">
+        <input class="inp" v-model="code" type="text" placeholder="请输入验证码">
       </p>
     </div>
     <div class="btnBox">
       <div class="btn">
-        <span class="nextBtn">保存</span>
+        <span class="nextBtn" @click="next">保存</span>
       </div>
     </div>
   </div>
@@ -27,11 +27,55 @@ export default {
   name: 'revisephonetwo',
   data () {
     return {
-      title: '修改手机号（2/2）'
+      title: '修改手机号（2/2）',
+      phone: '',
+      code: '',
+      id: ''
     }
+  },
+  created () {
+    console.log('新手机号')
+    // console.log(this.$route.params)
+    this.id = this.$route.params.id
   },
   components: {
     Headers
+  },
+  methods: {
+    getCode () {
+      console.log('获取验证码')
+      let _this = this
+      console.log(_this.phone)
+      let param = {
+        mobilePhone: _this.phone,
+        queryType: 'edit'
+      }
+      this.$store.dispatch('verificationCode', param).then(function (res) {
+        console.log(res)
+        if (res.status == '0') {
+          console.log(res.data.list.verificationCode)
+          _this.code = res.data.list.verificationCode
+        } else if (res.status == '1') {
+          alert(res.message)
+        }
+      })
+    },
+    next () {
+      let _this = this
+      let param = {
+        mobilePhone: _this.phone,
+        verificationCode: _this.code,
+        memberId: _this.id,
+        editType: 'mobilePhone'
+      }
+      console.log(param)
+      this.$store.dispatch('edit', param).then(function (res) {
+        console.log(res)
+        if (res.status == '0') {
+          _this.$router.push('/Mine')
+        }
+      })
+    }
   }
 }
 </script>

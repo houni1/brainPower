@@ -68,6 +68,26 @@ const actions = {
         reject(error)
       })
     })
+  },
+  // 设备开关
+  switch: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.switch(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 绑定终端设备
+  bind: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.bind(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
   }
 }
 

@@ -1,29 +1,25 @@
 <template>
   <div id="terminal">
-    <Headers></Headers>
+    <Headers>
+      <span slot="title">{{title}}</span>
+    </Headers>
     <div class="contBox">
       <div class="pic">
         <img src="../../assets/images/terminal/icon_lianjie.png" alt="">
       </div>
       <p class="title">您的账号 <span class="color">15110078983</span> 即将绑定终端设备</p>
       <div class="cont">
-        <!-- <group>
-          <cell title="电力户号别名" value="请输入电力户号别名"></cell>
-          <x-address title="请选择所在的城市" v-model="city" raw-value :list="addressData" value-text-align="left"></x-address>
-          <cell title="电力户号" value="请输入电力户号"></cell>
-        </group> -->
         <p class="cont_item">
           <span>电力户号别名</span>
-          <input type="text" placeholder="请输入电力户号别名">
+          <input type="text" v-model="name" placeholder="请输入电力户号别名">
         </p>
         <p class="cont_item city">
           <span>所在城市</span>
-          <!-- <input type="text" placeholder="请输入电力户号别名"> -->
-          <x-address class="cityBox" title="" v-model="city" raw-value :list="addressData" value-text-align="left"></x-address>
+          <x-address @on-hide="cityfn(flag, city)" placeholder="请选择地区" class="cityBox" title="" v-model="city" raw-value :list="cityarr" value-text-align="left"></x-address>
         </p>
         <p class="cont_item">
           <span>电力户号</span>
-          <input type="text" placeholder="请输入电力户号">
+          <input type="text" v-model="code" placeholder="请输入电力户号">
         </p>
       </div>
       <div class="btnBox" @click="sureBind">
@@ -44,7 +40,14 @@ export default {
       title: '绑定终端设备',
       picflag: true,
       addressData: ChinaAddressV4Data,
-      city: ['天津市', '市辖区', '和平区']
+      city: ['天津市', '市辖区', '和平区'],
+      macId: '',
+      code: '20180504002',
+      name: '测试电力户3',
+      regionId: '321011',
+      flag: 'true',
+      cityData: [],
+      cityarr: []
     }
   },
   components: {
@@ -54,9 +57,59 @@ export default {
     XButton,
     Cell
   },
+  created () {
+    console.log('绑定终端啊啊啊啊啊')
+    console.log(this.$route.params.macId)
+    this.macId = this.$route.params.macId
+  },
+  activated: function () {
+    let _this = this
+    let param = {}
+    this.$store.dispatch('region', param).then(function (res) {
+      console.log('请求地区数据=======')
+      _this.cityData = res.data.list
+      _this.filterCity(_this.cityData)
+    })
+  },
   methods: {
+    filterCity (data) {
+      data.forEach((item) => {
+        item['value'] = item.id
+        if (item.children) {
+          item.children.forEach((itemchild) => {
+            itemchild['parent'] = item.id
+          })
+          this.filterCity(item.children)
+          delete item.children
+        }
+        this.cityarr.push(item)
+      })
+    },
+    cityfn (flag, city) {
+      console.log(flag)
+      console.log(city[2])
+      this.regionId = city[2]
+    },
     sureBind () {
-      this.$router.push('/tabbar')
+      // this.$router.push('/tabbar')
+      console.log('确认绑定终端')
+      let _this = this
+      let param = {
+        name: _this.name,
+        regionId: _this.regionId,
+        code: _this.code,
+        macId: _this.macId
+      }
+      console.log(param)
+      this.$store.dispatch('bind', param).then(function (res) {
+        console.log(res)
+        if (res.status == '0') {
+          alert('绑定成功')
+          _this.$router.push('/')
+        } else if (res.status == '1') {
+          alert(res.message)
+        }
+      })
     }
   }
 }

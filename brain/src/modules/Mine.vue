@@ -3,12 +3,12 @@
     <div class="userBox">
       <div class="titleBox">
         <p class="title">我的</p>
-        <span class="logOff">退出登录</span>
+        <span class="logOff" @click="loginOut">退出登录</span>
       </div>
       <div class="userPic">
         <img src="../assets/images/mine/111111.jpg" alt="">
       </div>
-      <div class="userName">赵云</div>
+      <div class="userName">{{data.name}}</div>
     </div>
     <div class="userInfobox">
       <group class="user_item">
@@ -17,7 +17,7 @@
         </cell>
       </group>
       <group class="user_item">
-        <cell title="电力户号" is-link :link="{path:'/mypower'}">
+        <cell title="电力户号" is-link :link="{name:'mypower', params: {id: data.id}}">
           <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../assets/images/mine/icon_wifi.png">
         </cell>
       </group>
@@ -25,7 +25,7 @@
         <cell title="联系我们" is-link value="400-000-000">
           <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../assets/images/mine/icon_phone_mine.png">
         </cell>
-        <cell title="意见反馈" is-link :link="{path:'/myfeedback'}">
+        <cell title="意见反馈" is-link :link="{name:'myfeedback', params: {phone: data.mobilePhone}}">
           <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../assets/images/mine/icon_feedback.png">
         </cell>
       </group>
@@ -48,6 +48,7 @@ export default {
   },
   data () {
     return {
+      data: {}
     }
   },
   /**
@@ -84,11 +85,27 @@ export default {
    * 生命周期函数--keep-alive 组件激活时调用
    */
   activated: function () {
+    let _this = this
+    console.log('用户资料')
+    let param = {}
+    let user = window.localStorage.getItem('user')
+    let userphone = JSON.parse(user).mobilePhone
+    console.log(userphone)
+    this.$store.dispatch('userinfo', param).then(function (res) {
+      _this.data = res.data.list
+      console.log(_this.data.mobilePhone)
+      userphone = _this.data.mobilePhone
+    })
   },
   /**
    * 组件内方法
    */
   methods: {
+    loginOut () {
+      console.log('退出登录')
+      window.localStorage.removeItem('user')
+      this.$router.push('/login')
+    }
   },
   /**
    * 计算属性

@@ -6,12 +6,12 @@
     <div class="contBox">
       <p class="item names">
         <span>姓名</span>
-        <input class="inp" type="text" placeholder="请输入姓名">
+        <input class="inp" v-model="name" type="text" placeholder="请输入姓名">
       </p>
     </div>
     <div class="btnBox">
       <div class="btn">
-        <span class="nextBtn">保存</span>
+        <span class="nextBtn" @click="baocun">保存</span>
       </div>
     </div>
   </div>
@@ -22,11 +22,36 @@ export default {
   name: 'revisename',
   data () {
     return {
-      title: '姓名'
+      title: '姓名',
+      memberId: '',
+      name: ''
     }
+  },
+  created () {
+    console.log('修改姓名')
+    this.memberId = this.$route.params.id
+    this.name = this.$route.params.name
   },
   components: {
     Headers
+  },
+  methods: {
+    baocun () {
+      console.log('保存姓名')
+      let _this = this
+      let param = {
+        name: _this.name,
+        memberId: _this.memberId,
+        editType: 'name'
+      }
+      console.log(param)
+      this.$store.dispatch('edit', param).then(function (res) {
+        console.log(res)
+        if (res.status == '0') {
+          _this.$router.push('/Mine')
+        }
+      })
+    }
   }
 }
 </script>

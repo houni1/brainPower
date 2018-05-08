@@ -14,7 +14,7 @@
           <img src="../../assets/images/eledetails/icon_operation_nor.png" alt="">
           <span class="stateTxt">离线</span>
         </p>
-        <p class="switch" @click="isopenBtn(deviceDetail.swicthStatus)">
+        <p class="switch" @click="isopenBtn(deviceDetail.id, deviceDetail.swicthStatus)">
           <img v-if="deviceDetail.swicthStatus == '1'" src="../../assets/images/eledetails/switch_open.png" alt="">
           <img v-else-if="deviceDetail.swicthStatus == '0'" src="../../assets/images/eledetails/switch_close.png" alt="">
         </p>
@@ -85,7 +85,18 @@ export default {
     })
   },
   methods: {
-    isopenBtn (flag) {
+    isopenBtn (id, flag) {
+      console.log(id)
+      let flagstr = flag.toString()
+      console.log(flagstr)
+      let param = {
+        deviceId: id,
+        switchStatus: flagstr
+      }
+      console.log(param)
+      this.$store.dispatch('switch', param).then(function (res) {
+        console.log(res)
+      })
       if (flag == '1') {
         console.log('on')
       } else if (flag == '0') {

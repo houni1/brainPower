@@ -9,11 +9,111 @@ const state = {
 }
 
 const actions = {
-  // 首页内容
-  userhome: function ({commit}, data) {
+  // 用户注册
+  register: function ({commit}, data) {
     return new Promise((resolve, reject) => {
-      API.userhome(data).then((res) => {
-        resolve(res.data)
+      API.register(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 获取验证码
+  verificationCode: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.verificationCode(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 用户登陆
+  login: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.login(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 用户密码重置
+  reset: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.reset(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 查找区域
+  region: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.region(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 用户资料
+  userinfo: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.userinfo(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 修改用户姓名，新手机号码保存
+  edit: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.edit(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 用户原手机号验证
+  verification: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.verification(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 电力户号资料
+  account: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.account(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 用户反馈
+  feedback: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.feedback(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 修改电力户号地区
+  editAccount: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.editAccount(data).then((res) => {
+        resolve(res)
       }, (error) => {
         reject(error)
       })

@@ -12,20 +12,42 @@
           <span class="icon">
             <img src="../../assets/images/login/icon_account.png" alt="">
           </span>
-          <input type="text" placeholder="请输入手机号" class="user_input phone_input">
-          <span class="yzmBtn">获取验证码</span>
+          <input type="text" v-model="phone" placeholder="请输入手机号" class="user_input phone_input">
         </p>
         <p class="item yanzm">
           <span class="icon">
-            <img src="../../assets/images/login/icon_code.png" alt="">
+            <img src="../../assets/images/login/icon_password.png" alt="">
           </span>
-          <input type="password" placeholder="请输入验证码" class="user_input">
+          <input type="password" v-model="pass" placeholder="请输入密码" class="user_input">
         </p>
       </div>
     </div>
     <div class="loginBtnBox">
       <div class="loginBtn">
         <span class="toLoginBtn" @click="toLogin">登录</span>
+      </div>
+    </div>
+    <div class="loginBottom">
+      <div class="txtBtn">
+        <p class="register" @click="toregister">注册</p>
+        <p class="forgetpass" @click="togetpass">忘记密码？</p>
+      </div>
+      <div class="elseBox">
+        <p class="border">
+          <span></span>
+        </p>
+        <p class="txt">其他方式登录</p>
+        <p class="border">
+          <span></span>
+        </p>
+      </div>
+      <div class="wechatBox">
+        <div class="picBox">
+          <p class="pic">
+            <img src="../../assets/images/login/icon_wechat.png" alt="">
+          </p>
+          <p class="txt">微信登录</p>
+        </div>
       </div>
     </div>
   </div>
@@ -36,13 +58,37 @@ export default {
   name: 'Login',
   data () {
     return {
-      logoName: '智能云插座'
+      logoName: '智能云插座',
+      phone: '',
+      pass: ''
     }
   },
   methods: {
     toLogin () {
       console.log('toLogin')
-      this.$router.push('/')
+      let _this = this
+      let param = {
+        mobilePhone: _this.phone,
+        password: _this.pass
+      }
+      console.log(param)
+      this.$store.dispatch('login', param).then(function (res) {
+        console.log(res)
+        if (res.status == '0') {
+          _this.$router.push('/')
+          _this.phone = ''
+          _this.pass = ''
+          window.localStorage.setItem('user', JSON.stringify(param))
+        } else if (res.status == 1) {
+          alert(res.message)
+        }
+      })
+    },
+    toregister () {
+      this.$router.push('/registerone')
+    },
+    togetpass () {
+      this.$router.push('/getpassone')
     }
   }
 }
@@ -52,9 +98,12 @@ export default {
   #Login {
     background: url('../../assets/images/login/bg.png') no-repeat;
     background-size: 100% 100%;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
     .logo {
       width: 102px;
-      margin: 80px auto 0 auto;
+      margin: 70px auto 0 auto;
       dd {
         width: 102px;
         height: 102px;
@@ -72,7 +121,7 @@ export default {
     }
     .loginBox {
       width: 100%;
-      padding: 60px 20px 0 20px;
+      padding: 50px 20px 0 20px;
       box-sizing: border-box;
       .userInfo {
         width: 100%;
@@ -106,24 +155,6 @@ export default {
         }
         .phone {
           border-bottom: 1px solid #eee;
-          position: relative;
-          .phone_input {
-            padding-right: 100px;
-          }
-          .yzmBtn {
-            width: 90px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            position: absolute;
-            right: 0;
-            top: 15px;
-            border: 1px solid #dcdee0;
-            border-radius: 5px;
-            font-size: 12px;
-            color: #aaa;
-            cursor: pointer;
-          }
         }
       }
     }
@@ -159,6 +190,69 @@ export default {
         .toLoginBtn:active {
           background: url('../../assets/images/login/btn_login_pressed.png') no-repeat;
           background-size: 100% 100%;
+        }
+      }
+    }
+    .loginBottom {
+      padding-left: 18px;
+      padding-right: 18px;
+      width: 100%;
+      padding-top: 10px;
+      font-size: 12px;
+      box-sizing: border-box;
+      color: #fff;
+      .txtBtn {
+        display: flex;
+        p {
+          flex: 1;
+        }
+        .forgetpass {
+          text-align: right;
+        }
+      }
+      .elseBox {
+        margin-top: 50px;
+        display: flex;
+        opacity: 0.5;
+        .txt {
+          height: 15px;
+          line-height: 15px;
+          font-size: 11px;
+          text-align: center;
+          width: 40%;
+        }
+        .border {
+          width: 30%;
+          height: 15px;
+          padding-top: 7px;
+          span {
+            display: block;
+            width: 100%;
+            border-top: 1px solid #fff;
+          }
+        }
+      }
+      .wechatBox {
+        padding-top: 20px;
+        text-align: center;
+        width: 100%;
+        .picBox {
+          width: 50px;
+          height: 80px;
+          margin: 0 auto;
+          .pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            img {
+              display: block;
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .txt {
+            padding-top: 6px;
+          }
         }
       }
     }

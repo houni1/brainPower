@@ -11,6 +11,7 @@ axios.defaults.baseURL = window.wtEnv.serverBaseUrl
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
 // axios.defaults.headers.post['x-access-token'] = localStorage.token
+axios.defaults.withCredentials = true
 
 // 添加一个请求拦截器
 axios.interceptors.request.use(function (config) {
@@ -30,7 +31,17 @@ axios.interceptors.response.use(function (response) {
 })
 
 const user = {
-  userhome: '/user/index/'
+  register: '/base/register/',
+  verificationCode: '/base/verificationCode/',
+  login: '/base/login/',
+  reset: '/base/reset/',
+  region: '/base/region/',
+  userinfo: '/base/info/',
+  edit: '/base/edit/',
+  verification: '/base/verification/',
+  account: '/base/account/',
+  feedback: '/feedback/save/',
+  editAccount: '/base/editAccount/'
 }
 
 const home = {
@@ -38,7 +49,9 @@ const home = {
   indoortem: '/weather/indoor/',
   family: '/terminal/elecsum/',
   wiringList: '/device/list/',
-  eledetail: '/device/detail/'
+  eledetail: '/device/detail/',
+  switch: '/device/switch/',
+  bind: '/terminal/bind/'
 }
 
 // function apiGet (url, query) {
@@ -75,12 +88,24 @@ function apiGet (url) {
  * 规则：
  */
 export default {
-  userhome: (data) => apiGet(user.userhome, data),
   outdoor: (data) => apiPost(home.outdoor, data), // 室外环境
   indoortem: (data) => apiPost(home.indoortem, data), // 室内环境
   family: (data) => apiPost(home.family, data), // 家庭能效
   wiringList: (data) => apiPost(home.wiringList, data), // 设备列表
   eledetail: (data) => apiPost(home.eledetail, data), // 设备详情
+  switch: (data) => apiPost(home.switch, data), // 设备开关
+  bind: (data) => apiPost(home.bind, data), // 扫码绑定终端设备
+  register: (data) => apiPost(user.register, data), //  用户注册
+  verificationCode: (data) => apiPost(user.verificationCode, data), //  获取验证码
+  login: (data) => apiPost(user.login, data), //  用户登陆
+  reset: (data) => apiPost(user.reset, data), //  用户密码重置
+  region: (data) => apiPost(user.region, data), //  查找区域
+  userinfo: (data) => apiGet(user.userinfo, data), //  用户资料
+  edit: (data) => apiPost(user.edit, data), //  修改用户姓名,新手机号码保存
+  verification: (data) => apiPost(user.verification, data), //  用户原手机号验证
+  account: (data) => apiPost(user.account, data), //  电力户号资料
+  feedback: (data) => apiPost(user.feedback, data), //  用户反馈
+  editAccount: (data) => apiPost(user.editAccount, data), //  修改电力户号地区
   apiGet: apiGet, // GET接口
   apiPost: apiPost // POST接口
 }

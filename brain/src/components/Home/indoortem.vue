@@ -82,17 +82,42 @@ export default {
       .picTxt {
         display: inline-block;
         width: 100%;
-        height: 14px;
+        height: 100%;
         position: absolute;
         left: 0;
-        top: 1px;
+        top: 50%;
+        margin-top: -7px;
         font-size: 10px;
         line-height: 14px;
+        vertical-align: middle;
       }
       img {
+        width: 45px;
         height: 100%;
-        display: inline-block;
+        display: block;
+        position: absolute;
+        left: 50%;
+        margin-left: -22.5px;
+        top: 0;
       }
     }
+    // .pic {
+    //   height: 14px;
+    //   position: relative;
+    //   .picTxt {
+    //     display: inline-block;
+    //     width: 100%;
+    //     height: 14px;
+    //     position: absolute;
+    //     left: 0;
+    //     top: 1px;
+    //     font-size: 10px;
+    //     line-height: 14px;
+    //   }
+    //   img {
+    //     height: 100%;
+    //     display: inline-block;
+    //   }
+    // }
   }
 </style>

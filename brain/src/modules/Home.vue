@@ -1,132 +1,34 @@
 <template>
   <div id="Home">
-    <div class="homeBox">
-      <div class="box">
-        <div class="temperatureList">
-          <div class="titleBox">
-            <p class="title">首页</p>
-            <span class="scan" @click="scan">
-              <img src="../assets/images/home/icon_scanning.png" alt="">
-            </span>
-          </div>
-          <div class="fixedBox">
-            <p class="contBox">
-              <span class="txt">室内外环境实时监测</span>
-              <img class="pic" src="../assets/images/home/icon_a.png" alt="">
-            </p>
-          </div>
-          <!-- <div class="warmList">
-            <div class="warm_item outdoor">
-              <p class="txt">室外环境</p>
-              <p class="num">
-                <span class="number">{{data.outTemp}}</span>
-                <span class="unit">℃</span>
-              </p>
-              <p class="air">空气质量 {{data.outPM}}</p>
-              <p class="pic" v-if="data.outPM <= 50">
-                <img src="../assets/images/home/label_good.png" alt="">
-                <span class="picTxt">良</span>
-              </p>
-              <p class="pic" v-else-if="50 < data.outPM <= 100">
-                <img src="../assets/images/home/label_comfortable.png" alt="">
-                <span class="picTxt">舒适</span>
-              </p>
-              <p class="pic" v-else>
-                <span class="picTxt">差</span>
-              </p>
-            </div>
-            <div class="warm_item indoortem">
-              <p class="txt">室内温度</p>
-              <p class="num">
-                <span class="number">{{data.inTemp}}</span>
-                <span class="unit">℃</span>
-              </p>
-              <p class="air">空气质量 {{data.inPM}}</p>
-              <p class="pic" v-if="data.outPM <= 50">
-                <img src="../assets/images/home/label_good.png" alt="">
-                <span class="picTxt">良</span>
-              </p>
-              <p class="pic" v-else-if="50 < data.outPM <= 100">
-                <img src="../assets/images/home/label_comfortable.png" alt="">
-                <span class="picTxt">舒适</span>
-              </p>
-              <p class="pic" v-else>
-                <span class="picTxt">差</span>
-              </p>
-            </div>
-            <div class="warm_item indoorhumidity">
-              <p class="txt">室内湿度</p>
-              <p class="num">
-                <span class="number">{{data.inRH}}</span>
-                <span class="unit">%</span>
-              </p>
-            </div>
-          </div> -->
-          <warmList></warmList>
-        </div>
-      </div>
-      <!-- <div class="family">
-        <div class="titleBox" @click="toElecount">
-          <p class="titleTxt">家庭能效</p>
-          <p class="titlePic">
-            <img src="../assets/images/home/icon_word.png" alt="">
-          </p>
-        </div>
-        <div class="electricList">
-          <div class="ele_item">
-            <p class="ele_title">
-              <span class="ele_icon">
-                <img src="../assets/images/home/icon_electricity.png" alt="">
-              </span>
-              <span class="ele_txt">本月已使用电量</span>
-            </p>
-            <p class="ele_num">
-              <span class="ele_number">{{data.monthUIT}}</span>
-              <span class="ele_unit">度</span>
-            </p>
-          </div>
-          <div class="ele_item day_item">
-            <p class="ele_title">
-              <span class="ele_icon">
-                <img src="../assets/images/home/icon_electricity.png" alt="">
-              </span>
-              <span class="ele_txt">今日已使用电量</span>
-            </p>
-            <p class="ele_num">
-              <span class="ele_number">{{data.dayUIT}}</span>
-              <span class="ele_unit">度</span>
-            </p>
-          </div>
-        </div>
-      </div> -->
-      <family></family>
-      <!-- <div class="wiringList">
-        <div class="titleBox">
-          <p class="titleTxt">我的电器</p>
-        </div>
-        <div class="wiringBox">
-          <div class="wiring_item" v-for="(item, index) in data.deviceDataList" :key="index" @click="toEleDetail">
-            <div class="wiring_icon">
-              <img src="../assets/images/home/icon_jiashiqi.png" alt="">
-            </div>
-            <div class="wiring_cont">
-              <p class="wiring_name">{{item.name}}</p>
-              <p class="wiring_power">当前功率：{{item.currentPower}}W</p>
-            </div>
-            <div class="wiring_rightBox">
-              <div class="wiring_btn" @click.stop="isopenBtn(item.switch)">
-                <img v-if="item.switch == 'on'" src="../assets/images/home/icon_switch.png" alt="">
-                <img v-else-if="item.switch == 'off'" src="../assets/images/home/icon_switch_nor.png" alt="">
-              </div>
-              <div class="wiring_right">
-                <img src="../assets/images/home/icon_arrow.png" alt="">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <wiringList></wiringList>
+    <div class="titleBox">
+      <p class="title">首页</p>
+      <span class="scan" @click="scan">
+        <img src="../assets/images/home/icon_scanning.png" alt="">
+      </span>
     </div>
+    <pull-to :top-load-method="refresh">
+      <div class="homeBox">
+        <div class="box">
+          <div class="temperatureList">
+            <!-- <div class="titleBox">
+              <p class="title">首页</p>
+              <span class="scan" @click="scan">
+                <img src="../assets/images/home/icon_scanning.png" alt="">
+              </span>
+            </div> -->
+            <div class="fixedBox">
+              <p class="contBox">
+                <span class="txt">室内外环境实时监测</span>
+                <img class="pic" src="../assets/images/home/icon_a.png" alt="">
+              </p>
+            </div>
+            <warmList></warmList>
+          </div>
+        </div>
+        <family></family>
+        <wiringList></wiringList>
+      </div>
+    </pull-to>
   </div>
 </template>
 
@@ -134,9 +36,11 @@
 import warmList from '../components/Home/warmList.vue'
 import family from '../components/Home/family.vue'
 import wiringList from '../components/Home/wiringList.vue'
+import PullTo from 'vue-pull-to'
 export default {
   name: 'Home',
   components: {
+    PullTo,
     warmList,
     family,
     wiringList
@@ -156,6 +60,14 @@ export default {
    * 生命周期函数--在实例创建完成后被立即调用
    */
   created: function () {
+    console.log('home')
+    let user = window.localStorage.getItem('user')
+    console.log(user)
+    if (user) {
+      this.$router.push('/')
+    } else {
+      this.$router.push('/login')
+    }
   },
   /**
    * 生命周期函数--在挂载开始之前被调用：相关的 render 函数首次被调用
@@ -181,27 +93,30 @@ export default {
    * 生命周期函数--keep-alive 组件激活时调用
    */
   activated: function () {
-    // let _this = this
-    // let param = {}
-    // this.$store.dispatch('userhome', param).then(function (res) {
-    //   // console.log(res[0].Val)
-    //   let dataJson = JSON.parse(res[0].Val)
-    //   _this.data = dataJson
-    // })
   },
   /**
    * 组件内方法
    */
   methods: {
+    // 下拉刷新
+    refresh (loaded) {
+      setTimeout(() => {
+        console.log('刷新')
+        location.reload()
+        loaded('done')
+      }, 2000)
+    },
+    // 扫描二维码
     scan () {
       console.log('点击扫描按钮')
       // this.$router.push('/sweepcode')
       var dsBridge = require('dsbridge')
       console.log(dsBridge)
       dsBridge.call('startScan', 'startScan', function (v) {
-        alert(v)
+        // alert(v)
+        this.$router.push({name: 'terminal', params: {macId: v}})
       })
-      dsBridge.register('addValue', function (l, r) {
+      dsBridge.register('startScan', function (l, r) {
         console.log('l+r')
         console.log(l + r)
       })
@@ -221,14 +136,43 @@ export default {
   overflow: scroll;
   padding-bottom: 53px;
   position: relative;
+  .titleBox {
+    z-index: 999;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #fff;
+    background: url('../assets/images/tabbar/pic_home.png') no-repeat;
+    background-size: 100% 100%;
+    background-position: center center;
+    position: relative;
+    position: absolute;
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .scan {
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: block;
+      width: 40px;
+      height: 40px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
   .box {
     background: #fff;
     .temperatureList {
       width: 100%;
       height: 249px;
-      padding-top: 15px;
+      padding-top: 49px;
       box-sizing: border-box;
-      background: url('../assets/images/home/pic_home.png') no-repeat;
+      background: url('../assets/images/tabbar/pic_home_02.png') no-repeat;
       background-size: 100% 100%;
       .fixedBox {
         height: 32px;
@@ -318,30 +262,30 @@ export default {
           }
         }
       }
-      .titleBox {
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-        text-align: center;
-        color: #fff;
-        position: relative;
-        .title {
-          font-size: 16px;
-          font-weight: bold;
-        }
-        .scan {
-          position: absolute;
-          right: 0;
-          top: 0;
-          display: block;
-          width: 40px;
-          height: 40px;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
+      // .titleBox {
+      //   width: 100%;
+      //   height: 40px;
+      //   line-height: 40px;
+      //   text-align: center;
+      //   color: #fff;
+      //   position: relative;
+      //   .title {
+      //     font-size: 16px;
+      //     font-weight: bold;
+      //   }
+      //   .scan {
+      //     position: absolute;
+      //     right: 0;
+      //     top: 0;
+      //     display: block;
+      //     width: 40px;
+      //     height: 40px;
+      //     img {
+      //       width: 100%;
+      //       height: 100%;
+      //     }
+      //   }
+      // }
     }
   }
   .family {

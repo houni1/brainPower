@@ -13,7 +13,7 @@
             <p class="wiring_power">当前功率：{{item.currentPower}}W</p>
           </div>
           <div class="wiring_rightBox">
-            <div class="wiring_btn" @click.stop="isopenBtn(item.swicthStatus)">
+            <div class="wiring_btn" @click.stop="isopenBtn(item.id, item.swicthStatus)">
               <img v-if="item.swicthStatus == '1'" src="../../assets/images/home/icon_switch.png" alt="">
               <img v-else-if="item.swicthStatus == '0'" src="../../assets/images/home/icon_switch_nor.png" alt="">
             </div>
@@ -34,6 +34,9 @@ export default {
       deviceDataList: []
     }
   },
+  created () {
+    this.getcreated()
+  },
   activated: function () {
     let _this = this
     let param = {
@@ -46,21 +49,38 @@ export default {
     })
   },
   methods: {
+    getcreated () {
+      let _this = this
+      let param = {
+        terminalId: '888'
+        // terminalId: '999'
+      }
+      this.$store.dispatch('wiringList', param).then(function (res) {
+        console.log(res.list)
+        _this.deviceDataList = res.list
+      })
+    },
     toEleDetail (deviceId) {
       console.log(deviceId)
       console.log('toeledetails')
       this.$router.push({name: 'eleDetails', params: { deviceId: deviceId }})
     },
-    isopenBtn (flag) {
-      if (flag == '1') {
-        console.log('on')
-        // let param = {}
-        // this.$store.dispatch('userswitchon', param).then(function (res) {
-        //   console.log(res)
-        // })
-      } else if (flag == '0') {
-        console.log('off')
+    isopenBtn (id, flag) {
+      console.log(id)
+      let flagstr = flag.toString()
+      let _this = this
+      console.log(flagstr)
+      let param = {
+        deviceId: id,
+        switchStatus: flagstr
       }
+      console.log(param)
+      this.$store.dispatch('switch', param).then(function (res) {
+        console.log(res)
+        if (res.status == '0') {
+          _this.getcreated()
+        }
+      })
     }
   }
 }
