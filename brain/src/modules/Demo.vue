@@ -1,13 +1,15 @@
 <template>
   <div id="Demo">
-    场景设置
+    <load-more :show-loading="false" tip="功能正在开发中，敬请期待！" background-color="#fbf9fe"></load-more>
   </div>
 </template>
 
 <script>
+import { LoadMore } from 'vux'
 export default {
   name: 'Demo',
   components: {
+    LoadMore
   },
   data () {
     return {
@@ -63,4 +65,7 @@ export default {
 
 <style>
   .title-say{font-size: 12px;color: #999;margin-top:20px;text-align: center;}
+  #Demo {
+    padding-top: 30px;
+  }
 </style>

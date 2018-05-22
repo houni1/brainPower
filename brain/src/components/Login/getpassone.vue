@@ -7,7 +7,7 @@
       <p class="item phone">
         <span>手机号</span>
         <input class="inp inp_phone" v-model="phone" type="text">
-        <span class="yzmbtn" @click="getCode">获取验证码</span>
+        <button class="yzmbtn" :disabled='isDisabled' @click="getCode">{{codeTxt}}</button>
       </p>
       <p class="item yanzm">
         <span>验证码</span>
@@ -29,7 +29,10 @@ export default {
     return {
       title: '找回密码（1/2）',
       phone: '',
-      code: ''
+      code: '',
+      codeTxt: '获取验证码',
+      countdown: 60,
+      isDisabled: false
     }
   },
   components: {
@@ -48,11 +51,28 @@ export default {
         console.log(res)
         if (res.status == '0') {
           console.log(res.data.list.verificationCode)
-          // _this.code = res.data.list.verificationCode
+          _this.code = res.data.list.verificationCode
+          _this.countDown()
         } else if (res.status == '1') {
           alert(res.message)
         }
       })
+    },
+    countDown () {
+      let _this = this
+      if (_this.countdown == 0) {
+        _this.codeTxt = '发送验证码'
+        _this.isDisabled = false
+        _this.countdown = 60
+        return
+      } else {
+        _this.isDisabled = true
+        _this.codeTxt = this.countdown + 's'
+        _this.countdown--
+      }
+      setTimeout(function () {
+        _this.countDown()
+      }, 1000)
     },
     next () {
       console.log('找回秘密111下一步')
@@ -114,6 +134,7 @@ export default {
       text-align: center;
       font-size: 12px;
       color: #aaa;
+      background: #fff;
     }
   }
 }

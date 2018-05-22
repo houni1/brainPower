@@ -38,17 +38,21 @@ export default {
     next () {
       let _this = this
       console.log('用户资料')
-      let param = {
-        mobilePhone: _this.phone,
-        info: _this.info
-      }
-      this.$store.dispatch('feedback', param).then(function (res) {
-        console.log(res)
-        if (res.status == '0') {
-          alert('感谢您的宝贵意见')
-          _this.$router.push('/Mine')
+      if (_this.info == '') {
+        alert('请输入您的宝贵意见')
+      } else {
+        let param = {
+          mobilePhone: _this.phone,
+          info: _this.info
         }
-      })
+        this.$store.dispatch('feedback', param).then(function (res) {
+          console.log(res)
+          if (res.status == '0') {
+            alert('感谢您的宝贵意见')
+            _this.$router.push('/Mine')
+          }
+        })
+      }
     }
   }
 }

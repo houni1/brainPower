@@ -30,8 +30,11 @@ export default {
   },
   activated: function () {
     let _this = this
-    console.log('用户资料')
-    let param = {}
+    let memberId = window.localStorage.getItem('memberId')
+    console.log(memberId)
+    let param = {
+      memberId: memberId
+    }
     this.$store.dispatch('userinfo', param).then(function (res) {
       console.log(res)
       _this.data = res.data.list

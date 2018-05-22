@@ -43,6 +43,24 @@ export default {
     this.code = this.$route.params.verificationCode
   },
   methods: {
+    // next () {
+    //   console.log('注册222下一步')
+    //   let _this = this
+    //   if (_this.pass == '') {
+    //     alert('请输入密码')
+    //   } else if (_this.surepass == '') {
+    //     alert('请输入确认密码')
+    //   } else {
+    //     if (_this.pass === _this.surepass) {
+    //       console.log('next')
+    //       this.$router.push({name: 'registerthree', params: { mobilePhone: _this.phone, verificationCode: _this.code, password: _this.surepass }})
+    //     } else {
+    //       alert('请保证密码一致')
+    //       _this.pass = ''
+    //       _this.surepass = ''
+    //     }
+    //   }
+    // },
     next () {
       console.log('注册222下一步')
       let _this = this
@@ -51,13 +69,19 @@ export default {
       } else if (_this.surepass == '') {
         alert('请输入确认密码')
       } else {
-        if (_this.pass === _this.surepass) {
-          console.log('next')
-        this.$router.push({name: 'registerthree', params: { mobilePhone: _this.phone, verificationCode: _this.code, password: _this.surepass }})
+        // let regx = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,14}$/
+        let regx = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,14}$/
+        if (regx.test(_this.pass)) {
+          if (_this.pass === _this.surepass) {
+            console.log('next')
+            this.$router.push({name: 'registerthree', params: { mobilePhone: _this.phone, verificationCode: _this.code, password: _this.surepass }})
+          } else {
+            alert('请保证密码一致')
+            _this.pass = ''
+            _this.surepass = ''
+          }
         } else {
-          alert('请保证密码一致')
-          _this.pass = ''
-          _this.surepass = ''
+          alert('密码格式应为6-14位字母加数字')
         }
       }
     }

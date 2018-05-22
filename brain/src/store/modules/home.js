@@ -88,6 +88,66 @@ const actions = {
         reject(error)
       })
     })
+  },
+  // 解除终端设备
+  unbind: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.unbind(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // tabbar空调红外初始
+  tabinit: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.tabinit(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // tabbar空调红外发送
+  send: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.send(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // tabbar空调红外重置
+  resetkt: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.resetkt(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 首页初始化
+  homeinit: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.homeinit(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 删除设备
+  deletedevice: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.deletedevice(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
   }
 }
 

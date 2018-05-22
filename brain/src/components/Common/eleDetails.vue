@@ -2,22 +2,41 @@
   <div id="eleDetails">
     <Headers>
       <span slot="title">{{title}}</span>
+      <p slot="action" @click="moreBox(moreshow)" class="moreBox">
+        <img src="../../assets/images/tabbar/icon_more.png" alt="">
+      </p>
     </Headers>
+    <div class="morelist" v-show="moreshow">
+      <div class="morecont">
+        <p @click="deleted">删除设备</p>
+      </div>
+      <div class="moreshow"></div>
+    </div>
+    <confirm v-model="iscancel"
+      :title="删除设备"
+      @on-cancel="onCancel"
+      @on-confirm="onConfirm">
+        <p style="text-align:center;">是否确定删除该设备</p>
+    </confirm>
     <div class="contBox">
       <div class="box">
         <p class="title">{{deviceDetail.name}}</p>
-        <p class="state" v-if="deviceDetail.onlineStatus == '0'">
+        <p class="state" v-if="deviceDetail.onlineStatus == '1'">
           <img src="../../assets/images/eledetails/icon_operation.png" alt="">
           <span class="stateTxt">在线</span>
         </p>
-        <p class="state" v-else-if="deviceDetail.onlineStatus == '1'">
+        <p class="state" v-else-if="deviceDetail.onlineStatus == '0'">
           <img src="../../assets/images/eledetails/icon_operation_nor.png" alt="">
           <span class="stateTxt">离线</span>
         </p>
-        <p class="switch" @click="isopenBtn(deviceDetail.id, deviceDetail.swicthStatus)">
-          <img v-if="deviceDetail.swicthStatus == '1'" src="../../assets/images/eledetails/switch_open.png" alt="">
-          <img v-else-if="deviceDetail.swicthStatus == '0'" src="../../assets/images/eledetails/switch_close.png" alt="">
+        <p class="switch" @click="isopenBtn(deviceDetail.id, deviceDetail.switchStatus, deviceDetail.onlineStatus)">
+          <img v-if="deviceDetail.switchStatus == '0'" src="../../assets/images/eledetails/switch_open.png" alt="">
+          <img v-else-if="deviceDetail.switchStatus == '1'" src="../../assets/images/eledetails/switch_close.png" alt="">
         </p>
+        <!-- <p class="switch" @click="isopen(flag)">
+          <img v-if="flag" src="../../assets/images/eledetails/switch_open.png" alt="">
+          <img v-else src="../../assets/images/eledetails/switch_close.png" alt="">
+        </p> -->
         <div class="infoBox">
           <p class="info_title">
             <span>基本信息</span>
@@ -54,53 +73,116 @@
   </div>
 </template>
 <script>
+import { Confirm } from 'vux'
 import Headers from '../Common/Headers.vue'
 export default {
   name: 'eleDetails',
   data () {
     return {
       title: '电器详情',
-      isopen: true,
+      // isopen: true,
       deviceId: '',
-      deviceDetail: {}
+      deviceDetail: {},
+      flag: true,
+      moreshow: true,
+      iscancel: false
     }
   },
   components: {
-    Headers
+    Headers,
+    Confirm
   },
   created () {
     console.log('getparams')
     console.log(this.$route.params)
   },
-  activated: function () {
-    let _this = this
-    _this.deviceId = this.$route.params.deviceId
-    let param = {
-      deviceId: _this.deviceId
-    }
-    console.log(param)
-    this.$store.dispatch('eledetail', param).then(function (res) {
-      console.log(res.data.list[0])
-      _this.deviceDetail = res.data.list[0]
-    })
+  activated () {
+    this.getcreated()
   },
+  // activated: function () {
+    // let _this = this
+    // _this.deviceId = this.$route.params.deviceId
+    // let param = {
+    //   deviceId: _this.deviceId
+    // }
+    // console.log(param)
+    // this.$store.dispatch('eledetail', param).then(function (res) {
+    //   console.log(res.data.list[0])
+    //   _this.deviceDetail = res.data.list[0]
+    // })
+  // },
   methods: {
-    isopenBtn (id, flag) {
-      console.log(id)
-      let flagstr = flag.toString()
-      console.log(flagstr)
+    moreBox (flag) {
+      // alert(flag)
+      if (flag) {
+        this.moreshow = false
+      } else {
+        this.moreshow = true
+      }
+    },
+    onCancel () {
+      console.log('on cancel')
+    },
+    onConfirm (msg) {
       let param = {
-        deviceId: id,
-        switchStatus: flagstr
+        deviceId: this.deviceId
+      }
+      // alert(param)
+      this.$store.dispatch('deletedevice', param).then(function (res) {
+        // alert(JSON.stringify(res))
+      })
+    },
+    deleted () {
+      // alert('删除设备！！')
+      this.iscancel = true
+    },
+    getcreated () {
+      let _this = this
+      _this.deviceId = this.$route.params.deviceId
+      let param = {
+        deviceId: _this.deviceId
       }
       console.log(param)
-      this.$store.dispatch('switch', param).then(function (res) {
-        console.log(res)
+      this.$store.dispatch('eledetail', param).then(function (res) {
+        console.log(res.data.list[0])
+        _this.deviceDetail = res.data.list[0]
       })
-      if (flag == '1') {
-        console.log('on')
-      } else if (flag == '0') {
-        console.log('off')
+    },
+    isopen (flag) {
+      console.log(flag)
+      if (flag) {
+        this.flag = false
+      } else {
+        this.flag = true
+      }
+      console.log(this.flag)
+    },
+    isopenBtn (id, flag, status) {
+      if (status == '1') {
+        console.log(id)
+        let flagstr = flag.toString()
+        console.log(flagstr)
+        let _this = this
+        if (flagstr == '0') {
+          flagstr = '1'
+        } else if (flagstr == '1') {
+          flagstr = '0'
+        }
+        let param = {
+          deviceId: id,
+          switchStatus: flagstr
+        }
+        // alert(JSON.stringify(param))
+        this.$store.dispatch('switch', param).then(function (res) {
+          console.log(res)
+          if (res.status == '0') {
+            _this.getcreated()
+            // console.log(_this.deviceDataList)
+          }
+        })
+      } else if (status == '0') {
+        alert('设备离线，请检查设备')
+        return false
       }
     }
   }
@@ -108,6 +190,45 @@ export default {
 </script>
 
 <style scoped lang='less'>
+.morelist {
+  position: absolute;
+  right: 3px;
+  top: 44px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  color: #ccc;
+  text-align: center;
+  width: 100px;
+  padding: 5px;
+  z-index: 99;
+  .morecont {
+    line-height: 20px;
+    font-size: 12px;
+  }
+  .moreshow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #fff;
+    left: 77%;
+    transform: translateX(-50%);
+    top: -5px;
+  }
+}
+.moreBox {
+  width: 22px;
+  height: 100%;
+  padding-top: 20px;
+  box-sizing: border-box;
+  img {
+    display: block;
+    width: 22px;
+    height: 4px;
+  }
+}
 .contBox {
   width: 100%;
   height: 100%;
@@ -122,7 +243,7 @@ export default {
     border-radius: 5px;
     padding-left: 25px;
     padding-right: 25px;
-    padding-top: 30px;
+    padding-top: 20px;
     box-sizing: border-box;
     .title {
       font-size: 15px;
@@ -159,7 +280,7 @@ export default {
     .switch {
       width: 195px;
       height: 90px;
-      margin: 33px auto;
+      margin: 30px auto;
       img {
         width: 100%;
         height: 100%;

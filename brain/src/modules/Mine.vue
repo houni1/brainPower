@@ -1,12 +1,12 @@
 <template>
   <div id="Mine">
-    <div class="userBox">
-      <div class="titleBox">
+    <div class="userBox" :style="{'padding-top': isPhoneX?'44px': (isiOS?'20px':'0')}">
+      <div class="titleBox" :style="{'margin-bottom': isPhoneX?'10px': (isiOS?'15px':'35px')}">
         <p class="title">我的</p>
         <span class="logOff" @click="loginOut">退出登录</span>
       </div>
       <div class="userPic">
-        <img src="../assets/images/mine/111111.jpg" alt="">
+        <img src="../assets/images/mine/mine_logo.png" alt="">
       </div>
       <div class="userName">{{data.name}}</div>
     </div>
@@ -48,7 +48,10 @@ export default {
   },
   data () {
     return {
-      data: {}
+      data: {},
+      isAndroid: true,
+      isiOS: false,
+      isPhoneX: false
     }
   },
   /**
@@ -85,16 +88,28 @@ export default {
    * 生命周期函数--keep-alive 组件激活时调用
    */
   activated: function () {
+    let types = window.localStorage.getItem('type')
+    // alert(type)
+    if (types) {
+      if (types == 1) {
+        this.isiOS = true
+        this.isAndroid = false
+        this.isPhoneX = false
+      } else if (types == 2) {
+        this.isPhoneX = true
+        this.isiOS = false
+        this.isAndroid = false
+      }
+    }
     let _this = this
-    console.log('用户资料')
-    let param = {}
-    let user = window.localStorage.getItem('user')
-    let userphone = JSON.parse(user).mobilePhone
-    console.log(userphone)
+    let memberId = window.localStorage.getItem('memberId')
+    console.log(memberId)
+    let param = {
+      memberId: memberId
+    }
     this.$store.dispatch('userinfo', param).then(function (res) {
+      console.log(res)
       _this.data = res.data.list
-      console.log(_this.data.mobilePhone)
-      userphone = _this.data.mobilePhone
     })
   },
   /**
@@ -104,6 +119,11 @@ export default {
     loginOut () {
       console.log('退出登录')
       window.localStorage.removeItem('user')
+      window.localStorage.removeItem('memberId')
+      window.localStorage.removeItem('regionId')
+      window.localStorage.removeItem('regionName')
+      window.localStorage.removeItem('terminalId')
+      window.localStorage.removeItem('accountId')
       this.$router.push('/login')
     }
   },
@@ -121,7 +141,6 @@ export default {
     .userBox {
       width: 100%;
       height: 220px;
-      padding-top: 15px;
       box-sizing: border-box;
       background: url('../assets/images/mine/mine_pic.png')no-repeat;
       background-size: 100% 100%;
@@ -133,7 +152,7 @@ export default {
         text-align: center;
         color: #fff;
         position: relative;
-        margin-bottom: 20px;
+        margin-bottom: 35px;
         .title {
           font-size: 16px;
           font-weight: bold;

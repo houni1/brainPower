@@ -7,7 +7,7 @@
       <p class="item phone">
         <span>手机号</span>
         <input class="inp inp_phone" type="text" v-model="phone">
-        <span class="yzmbtn" @click="getCode">获取验证码</span>
+        <button class="yzmbtn" :disabled='isDisabled' @click="getCode">{{codeTxt}}</button>
       </p>
       <p class="item yanzm">
         <span>验证码</span>
@@ -38,7 +38,10 @@ export default {
     return {
       title: '新用户注册（1/3）',
       phone: '',
-      code: ''
+      code: '',
+      codeTxt: '获取验证码',
+      countdown: 60,
+      isDisabled: false
     }
   },
   components: {
@@ -48,21 +51,43 @@ export default {
   },
   methods: {
     getCode () {
-      console.log('获取验证码')
-      let _this = this
-      console.log(_this.phone)
-      let param = {
-        mobilePhone: _this.phone
-      }
-      this.$store.dispatch('verificationCode', param).then(function (res) {
-        console.log(res)
-        if (res.status == '0') {
-          console.log(res.data.list.verificationCode)
-          _this.code = res.data.list.verificationCode
-        } else if (res.status == '1') {
-          alert(res.message)
+      let phonereg = /^1[3|4|5|8][0-9]\d{4,8}$/
+      if (phonereg.test(this.phone)) {
+        console.log('获取验证码')
+        let _this = this
+        console.log(_this.phone)
+        let param = {
+          mobilePhone: _this.phone
         }
-      })
+        this.$store.dispatch('verificationCode', param).then(function (res) {
+          console.log(res)
+          if (res.status == '0') {
+            console.log(res.data.list.verificationCode)
+            _this.code = res.data.list.verificationCode
+            _this.countDown()
+          } else if (res.status == '1') {
+            alert(res.message)
+          }
+        })
+      } else {
+        alert('请您输入正确的手机格式')
+      }
+    },
+    countDown () {
+      let _this = this
+      if (_this.countdown == 0) {
+        _this.codeTxt = '发送验证码'
+        _this.isDisabled = false
+        _this.countdown = 60
+        return
+      } else {
+        _this.isDisabled = true
+        _this.codeTxt = this.countdown + 's'
+        _this.countdown--
+      }
+      setTimeout(function () {
+        _this.countDown()
+      }, 1000)
     },
     next () {
       console.log('注册111下一步')
@@ -121,6 +146,7 @@ export default {
       text-align: center;
       font-size: 12px;
       color: #aaa;
+      background: #fff;
     }
   }
 }

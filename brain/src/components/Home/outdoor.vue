@@ -6,16 +6,14 @@
         <span class="unit">℃</span>
     </p>
     <p class="air">空气质量 {{outdoor.pm}}</p>
-    <p class="pic" v-if="outdoor.pm <= 50">
-        <img src="../../assets/images/home/label_good.png" alt="">
-        <span class="picTxt">良</span>
-    </p>
-    <p class="pic" v-else-if="50 < outdoor.pm <= 100">
-        <img src="../../assets/images/home/label_comfortable.png" alt="">
-        <span class="picTxt">舒适</span>
-    </p>
-    <p class="pic" v-else>
-        <span class="picTxt">差</span>
+    <p class="pic">
+      <span style="line-height:14px;vertical-align:middle;" v-if="outdoor.pm < 0 || outdoor.pm <= 50" class="picTxt nice">优</span>
+      <span style="line-height:14px;vertical-align:middle;" v-else-if="outdoor.pm > 50 && outdoor.pm <= 100" class="picTxt good">良</span>
+      <span style="line-height:14px;vertical-align:middle;" v-else-if="outdoor.pm > 100 && outdoor.pm <= 150" class="picTxt goodmin">轻度污染</span>
+      <span style="line-height:14px;vertical-align:middle;" v-else-if="outdoor.pm > 150 && outdoor.pm <= 200" class="picTxt goodmiddle">中度污染</span>
+      <span style="line-height:14px;vertical-align:middle;" v-else-if="outdoor.pm > 200 && outdoor.pm <= 300" class="picTxt goodmax">重度污染</span>
+      <span style="line-height:14px;vertical-align:middle;" v-else-if="outdoor.pm > 200" class="picTxt bad">严重污染</span>
+      <span v-else></span>
     </p>
   </div>
 </template>
@@ -25,18 +23,21 @@ export default {
   name: 'outdoor',
   data () {
     return {
-      outdoor: {}
+      outdoor: {
+        temp: '-',
+        pm: ''
+      }
     }
   },
   activated: function () {
     let _this = this
+    let regionId = window.localStorage.getItem('regionId')
     let param = {
-      regionId: '320101'
-      // regionId: '320102'
+      regionId: regionId
     }
     this.$store.dispatch('outdoor', param).then(function (res) {
-      console.log(res.list)
-      _this.outdoor = res.list[0]
+      // console.log(res.list)
+      _this.outdoor = res.list
     })
   }
 }
@@ -73,27 +74,42 @@ export default {
     }
     .pic {
       height: 14px;
+      line-height: 14px;
       position: relative;
       .picTxt {
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        margin-top: -7px;
-        font-size: 10px;
-        line-height: 14px;
-        vertical-align: middle;
-      }
-      img {
-        width: 45px;
-        height: 100%;
         display: block;
         position: absolute;
+        padding-top: 2px;
+        // box-sizing: border-box;
+        top: 50%;
+        margin-top: -7px;
         left: 50%;
-        margin-left: -22.5px;
-        top: 0;
+        margin-left: -32px;
+        display: block;
+        width: 64px;
+        height: 14px;
+        line-height: 14px;
+        font-size: 10px;
+        border-radius: 7px;
+        vertical-align: middle;
+      }
+      .nice {
+        background: #57B12A;
+      }
+      .good {
+        background: #e6e21e;
+      }
+      .goodmin {
+        background: #Fda428;
+      }
+      .goodmiddle {
+        background: #Fc0d1B;
+      }
+      .goodmax {
+        background: #7F0F7E;
+      }
+      .bad {
+        background: #7d0425;
       }
     }
   }

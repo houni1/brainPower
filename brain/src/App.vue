@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <transition :name="transitionName">
-      <keep-alive><router-view class="child-view" :class="{ 'child-top' : isShowTop}"></router-view></keep-alive>
+      <keep-alive><router-view v-if="isRouterAlive" class="child-view" :class="{ 'child-top' : isShowTop}"></router-view></keep-alive>
     </transition>
   </div>
 </template>
@@ -20,7 +20,8 @@
         transitionName: 'slide-left',
         spiralType: 'bubbles',
         isShow: false,
-        isShowTop: false
+        isShowTop: false,
+        isRouterAlive: true
       }
     },
     created: function () {
@@ -28,6 +29,10 @@
     mounted: function () {
     },
     methods: {
+      reload () {
+        this.isRouterAlive = false
+        this.$nextTick(() => (this.isRouterAlive = true))
+      }
     },
     watch: {
       '$route' (to, from) {

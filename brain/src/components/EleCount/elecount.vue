@@ -6,7 +6,7 @@
         <span class="pic">
           <img src="../../assets/images/elecount/icon_time.png" alt="">
         </span>
-        <span class="time">选择时间</span>
+        <span class="time" style="float:left;padding-top:1px;margin-left:3px;">选择时间</span>
       </p>
     </Headers>
     <div class="contBox">
@@ -77,7 +77,8 @@ export default {
   .tiem {
     display: inline-block;
     height: 15px;
-    margin-left: 5px;
+    margin-left: 3px;
+    padding-top: 1px;
     float: left;
   }
 }

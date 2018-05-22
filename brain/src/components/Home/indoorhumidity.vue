@@ -13,17 +13,25 @@ export default {
   name: 'indoorhumidity',
   data () {
     return {
-      indoortem: {}
+      indoortem: {
+        rh: '-'
+      }
     }
   },
   activated: function () {
     let _this = this
+    let terminalId = window.localStorage.getItem('terminalId')
     let param = {
-      terminalId: '888'
+      terminalId: terminalId
     }
+    console.log(param)
     this.$store.dispatch('indoortem', param).then(function (res) {
-      console.log(res.list[0])
-      _this.indoortem = res.list[0]
+      // console.log(res.list[0])
+      if (res.list[0]) {
+        _this.indoortem = res.list[0]
+      } else {
+        _this.indoortem.rh = '-'
+      }
     })
   }
 }

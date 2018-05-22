@@ -1,10 +1,11 @@
 <template>
     <div class="wiringList" id="wiringList">
+      <!-- <alert v-model="lineshow" title="提示消息">网关处于离线状态</alert> -->
       <div class="titleBox">
           <p class="titleTxt">我的电器</p>
       </div>
       <div class="wiringBox">
-        <div class="wiring_item" v-for="(item, index) in deviceDataList" :key="index" @click="toEleDetail(item.id)">
+        <div class="wiring_item" v-for="(item, index) in deviceDataList" :key="index" @click="toEleDetail(item.id, item.deviceType)">
           <div class="wiring_icon">
             <img src="../../assets/images/home/icon_jiashiqi.png" alt="">
           </div>
@@ -13,9 +14,13 @@
             <p class="wiring_power">当前功率：{{item.currentPower}}W</p>
           </div>
           <div class="wiring_rightBox">
-            <div class="wiring_btn" @click.stop="isopenBtn(item.id, item.swicthStatus)">
-              <img v-if="item.swicthStatus == '1'" src="../../assets/images/home/icon_switch.png" alt="">
-              <img v-else-if="item.swicthStatus == '0'" src="../../assets/images/home/icon_switch_nor.png" alt="">
+            <!-- <div class="wiring_btn" @click.stop="isopen(flag)">
+              <img v-if="flag" src="../../assets/images/home/icon_switch.png" alt="">
+              <img v-else src="../../assets/images/home/icon_switch_nor.png" alt="">
+            </div> -->
+            <div class="wiring_btn" @click.stop="isopenBtn(item.id, item.switchStatus, item.onlineStatus)">
+              <img v-if="item.switchStatus == '0'" src="../../assets/images/home/icon_switch.png" alt="">
+              <img v-else-if="item.switchStatus == '1'" src="../../assets/images/home/icon_switch_nor.png" alt="">
             </div>
             <div class="wiring_right">
               <img src="../../assets/images/home/icon_arrow.png" alt="">
@@ -27,60 +32,113 @@
 </template>
 
 <script>
+import { Alert } from 'vux'
 export default {
   name: 'wiringList',
+  props: ['showDetail'],
+  components: {
+    Alert
+  },
   data () {
     return {
-      deviceDataList: []
+      deviceDataList: [],
+      show: true,
+      lineshow: false,
+      datalist: [
+        {
+          'swicthStatus': '0',
+          'currentPower': '2000',
+          'name': '空调',
+          'id': '1',
+          'roomName': '主卧'
+        }
+      ],
+      flag: false
     }
   },
-  created () {
+  // activated: function () {
+  //   let _this = this
+  //   let param = {
+  //     terminalId: '888'
+  //     // terminalId: '999'
+  //   }
+  //   this.$store.dispatch('wiringList', param).then(function (res) {
+  //     // console.log(res.list)
+  //     _this.deviceDataList = res.list
+  //   })
+  // },
+  activated () {
     this.getcreated()
-  },
-  activated: function () {
-    let _this = this
-    let param = {
-      terminalId: '888'
-      // terminalId: '999'
-    }
-    this.$store.dispatch('wiringList', param).then(function (res) {
-      console.log(res.list)
-      _this.deviceDataList = res.list
-    })
   },
   methods: {
     getcreated () {
       let _this = this
-      let param = {
-        terminalId: '888'
-        // terminalId: '999'
-      }
-      this.$store.dispatch('wiringList', param).then(function (res) {
-        console.log(res.list)
-        _this.deviceDataList = res.list
-      })
-    },
-    toEleDetail (deviceId) {
-      console.log(deviceId)
-      console.log('toeledetails')
-      this.$router.push({name: 'eleDetails', params: { deviceId: deviceId }})
-    },
-    isopenBtn (id, flag) {
-      console.log(id)
-      let flagstr = flag.toString()
-      let _this = this
-      console.log(flagstr)
-      let param = {
-        deviceId: id,
-        switchStatus: flagstr
-      }
-      console.log(param)
-      this.$store.dispatch('switch', param).then(function (res) {
-        console.log(res)
-        if (res.status == '0') {
-          _this.getcreated()
+      let terminalId = window.localStorage.getItem('terminalId')
+      if (terminalId != '0') {
+        let param = {
+          terminalId: terminalId
         }
-      })
+        this.$store.dispatch('wiringList', param).then(function (res) {
+          console.log('设备列表11111')
+          console.log(res.list)
+          if (res.list) {
+            _this.deviceDataList = res.list
+          }
+        })
+      } else {
+        _this.deviceDataList = []
+      }
+    },
+    toEleDetail (deviceId, deviceType) {
+      if (this.showDetail.detailflag) {
+        console.log(deviceType)
+        if (deviceType == '0' || deviceType == '2') {
+          this.$router.push({name: 'tabbar', params: { deviceId: deviceId }})
+        } else {
+          this.$router.push({name: 'eleDetails', params: { deviceId: deviceId }})
+        }
+      } else {
+        // alert('网关处于离线状态')
+        this.$emit('alertshow', this.show)
+        // this.show = true
+        return false
+      }
+    },
+    isopenBtn (id, flag, status) {
+      if (this.showDetail.detailflag) {
+        // alert(JSON.stringify(this.deviceDataList))
+        if (status == '1') {
+          this.deviceDataList.forEach((item) => {
+            if (item.id == id) {
+              if (item.switchStatus == '0') {
+                item.switchStatus = '1'
+                flag = '1'
+              } else if (item.switchStatus == '1') {
+                item.switchStatus = '0'
+                flag = '0'
+              }
+            }
+          })
+          // alert(flag)
+          // let _this = this
+          let param = {
+            deviceId: id,
+            switchStatus: flag
+          }
+          // alert(JSON.stringify(param))
+          this.$store.dispatch('switch', param).then(function (res) {
+          })
+        } else if (status == '0') {
+          alert('设备离线，请检查设备')
+          // this.lineshow = true
+          return false
+        }
+      } else {
+        // alert('网关处于离线状态')
+        // this.show = true
+        this.$emit('alertshow', this.show)
+        return false
+      }
     }
   }
 }
@@ -130,6 +188,7 @@ export default {
             top: 3.5px;
             width: 55px;
             height: 38px;
+            right: 40px;
             img {
               position: absolute;
               left: 0;

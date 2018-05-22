@@ -32,7 +32,7 @@
         <p class="register" @click="toregister">注册</p>
         <p class="forgetpass" @click="togetpass">忘记密码？</p>
       </div>
-      <div class="elseBox">
+      <!-- <div class="elseBox">
         <p class="border">
           <span></span>
         </p>
@@ -40,15 +40,15 @@
         <p class="border">
           <span></span>
         </p>
-      </div>
-      <div class="wechatBox">
+      </div> -->
+      <!-- <div class="wechatBox">
         <div class="picBox">
           <p class="pic">
             <img src="../../assets/images/login/icon_wechat.png" alt="">
           </p>
           <p class="txt">微信登录</p>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -61,6 +61,14 @@ export default {
       logoName: '智能云插座',
       phone: '',
       pass: ''
+    }
+  },
+  created () {
+    let user = window.localStorage.getItem('user')
+    if (user) {
+      this.$router.push('/')
+    } else {
+      this.$router.push('/login')
     }
   },
   methods: {
@@ -82,6 +90,8 @@ export default {
         } else if (res.status == 1) {
           alert(res.message)
         }
+        let memberId = res.data.list.memberId
+        window.localStorage.setItem('memberId', memberId)
       })
     },
     toregister () {

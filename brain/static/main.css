@@ -65,13 +65,20 @@ textarea::-webkit-input-placeholder{color:#ddd;}
 
 .weui-cells {font-size: 15px !important;}
 
+.action-block {
+  height: 44px!important;
+  margin-top: -44px!important;
+}
+
 .cityBox .weui-cell {
   padding: 0!important;
   white-space: nowrap!important;
   overflow: hidden!important;
   text-overflow: ellipsis!important;
 }
-
+.weui-dialog__btn_primary {
+  color: #4485f1!important;
+}
 .scrollable {
   padding-bottom: 0!important;
 }

@@ -1,34 +1,43 @@
 <template>
   <div id="Home">
-    <div class="titleBox">
-      <p class="title">首页</p>
-      <span class="scan" @click="scan">
-        <img src="../assets/images/home/icon_scanning.png" alt="">
-      </span>
-    </div>
-    <pull-to :top-load-method="refresh">
-      <div class="homeBox">
-        <div class="box">
-          <div class="temperatureList">
-            <!-- <div class="titleBox">
-              <p class="title">首页</p>
-              <span class="scan" @click="scan">
-                <img src="../assets/images/home/icon_scanning.png" alt="">
-              </span>
-            </div> -->
-            <div class="fixedBox">
-              <p class="contBox">
-                <span class="txt">室内外环境实时监测</span>
-                <img class="pic" src="../assets/images/home/icon_a.png" alt="">
-              </p>
-            </div>
-            <warmList></warmList>
-          </div>
-        </div>
-        <family></family>
-        <wiringList></wiringList>
+    <div class="defaultBox" v-show="isAndroid">
+      <div class="titleBox">
+        <p class="title">首页</p>
+        <span class="scan" @click="scan">
+          <img src="../assets/images/home/icon_scanning.png" alt="">
+        </span>
       </div>
-    </pull-to>
+    </div>
+    <div v-show="isiOS" class="iosbox">
+      <div class="titleBox">
+        <p class="title">首页</p>
+        <span class="scan" @click="scan">
+          <img src="../assets/images/home/icon_scanning.png" alt="">
+        </span>
+      </div>
+    </div>
+    <div v-show="isPhoneX" class="iphonexbox">
+      <div class="titleBox">
+        <p class="title">首页</p>
+        <span class="scan" @click="scan">
+          <img src="../assets/images/home/icon_scanning.png" alt="">
+        </span>
+      </div>
+    </div>
+    <div class="homewrap" :style="{'padding-top': isPhoneX?'44px': (isiOS?'20px':'0')}">
+      <pull-to :top-load-method="refresh">
+        <div class="homeBox">
+          <div class="box">
+            <div class="temperatureList">
+              <warmList></warmList>
+            </div>
+          </div>
+          <family></family>
+          <wiringList :showDetail="showDetail"  v-on:alertshow="alertshow"></wiringList>
+        </div>
+      </pull-to>
+    </div>
+    <alert v-model="show" title="提示消息">网关处于离线状态，仅能查询历史数据，部分功能将不可用</alert>
   </div>
 </template>
 
@@ -37,18 +46,28 @@ import warmList from '../components/Home/warmList.vue'
 import family from '../components/Home/family.vue'
 import wiringList from '../components/Home/wiringList.vue'
 import PullTo from 'vue-pull-to'
+import { Alert } from 'vux'
 export default {
   name: 'Home',
   components: {
     PullTo,
     warmList,
     family,
-    wiringList
+    wiringList,
+    Alert
   },
   data () {
     return {
+      isAndroid: true,
+      isiOS: false,
+      isPhoneX: false,
+      show: false,
       isopen: true,
-      data: {}
+      data: {},
+      terminal: {},
+      showDetail: {
+        detailflag: true
+      }
     }
   },
   /**
@@ -60,6 +79,22 @@ export default {
    * 生命周期函数--在实例创建完成后被立即调用
    */
   created: function () {
+    let type = this.$route.query.type
+    // alert(type)
+    window.localStorage.setItem('type', type)
+    let types = window.localStorage.getItem('type')
+    // alert(type)
+    if (types) {
+      if (types == 1) {
+        this.isiOS = true
+        this.isAndroid = false
+        this.isPhoneX = false
+      } else if (types == 2) {
+        this.isPhoneX = true
+        this.isiOS = false
+        this.isAndroid = false
+      }
+    }
     console.log('home')
     let user = window.localStorage.getItem('user')
     console.log(user)
@@ -93,6 +128,7 @@ export default {
    * 生命周期函数--keep-alive 组件激活时调用
    */
   activated: function () {
+    this.homeinit()
   },
   /**
    * 组件内方法
@@ -100,11 +136,44 @@ export default {
   methods: {
     // 下拉刷新
     refresh (loaded) {
+      let _this = this
       setTimeout(() => {
-        console.log('刷新')
-        location.reload()
+        // location.reload()
+        // _this.$root.reload()
+        // _this.$router.replace('/')
+        _this.homeinit()
         loaded('done')
       }, 2000)
+    },
+    alertshow (flag) {
+      this.show = flag
+    },
+    homeinit () {
+      let _this = this
+      let memberId = window.localStorage.getItem('memberId')
+      let param = {
+        memberId: memberId
+      }
+      console.log(param)
+      this.$store.dispatch('homeinit', param).then(function (res) {
+        console.log(res)
+        if (res.data.list) {
+          let terminalId = res.data.list.terminalId
+          // alert(terminalId)
+          window.localStorage.setItem('terminalId', terminalId)
+          let regionId = res.data.list.regionId
+          window.localStorage.setItem('regionId', regionId)
+          let regionName = res.data.list.regionName
+          window.localStorage.setItem('regionName', regionName)
+          let accountId = res.data.list.accountId
+          window.localStorage.setItem('accountId', accountId)
+          if (res.data.list.terminalOnlineStatus == '离线') {
+            // alert(res.data.list.terminalOnlineStatus)
+            _this.showDetail.detailflag = false
+            _this.show = true
+          }
+        }
+      })
     },
     // 扫描二维码
     scan () {
@@ -112,9 +181,17 @@ export default {
       // this.$router.push('/sweepcode')
       var dsBridge = require('dsbridge')
       console.log(dsBridge)
+      // let _this = this
+      // console.log(window.location.href)
+      // let macid = '1c1cfd1ebde3'
+      // window.location.href += 'terminal?macId=' + macid
       dsBridge.call('startScan', 'startScan', function (v) {
         // alert(v)
-        this.$router.push({name: 'terminal', params: {macId: v}})
+        console.log(v)
+        let macid = v
+        console.log(macid)
+        window.location.href += 'terminal?macId=' + macid
+        // _this.$router.push({name: 'terminal', params: {macId: macid}})
       })
       dsBridge.register('startScan', function (l, r) {
         console.log('l+r')
@@ -136,18 +213,48 @@ export default {
   overflow: scroll;
   padding-bottom: 53px;
   position: relative;
-  .titleBox {
+  .defaultBox {
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
     z-index: 999;
     width: 100%;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    color: #fff;
-    background: url('../assets/images/tabbar/pic_home.png') no-repeat;
+    background: url('../assets/images/header/pic_an.png') no-repeat;
     background-size: 100% 100%;
     background-position: center center;
-    position: relative;
+  }
+  .iphonexbox {
+    height: 94px;
+    padding-top: 44px;
     position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    background: url('../assets/images/header/picx.png') no-repeat;
+    background-size: 100% 100%;
+    background-position: center center;
+  }
+  .iosbox {
+    height: 70px;
+    padding-top: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    background: url('../assets/images/header/pic_ios.png') no-repeat;
+    background-size: 100% 100%;
+    background-position: center center;
+  }
+  .titleBox {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #fff;
+    position: relative;
     .title {
       font-size: 16px;
       font-weight: bold;
@@ -157,22 +264,28 @@ export default {
       right: 0;
       top: 0;
       display: block;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       img {
         width: 100%;
         height: 100%;
       }
     }
   }
+  .homewrap {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
+  }
   .box {
     background: #fff;
     .temperatureList {
       width: 100%;
-      height: 249px;
+      height: 214px;
       padding-top: 49px;
       box-sizing: border-box;
-      background: url('../assets/images/tabbar/pic_home_02.png') no-repeat;
+      background: url('../assets/images/home/pic_home.png') no-repeat;
       background-size: 100% 100%;
       .fixedBox {
         height: 32px;

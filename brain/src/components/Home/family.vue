@@ -40,18 +40,31 @@ export default {
   name: 'family',
   data () {
     return {
-      family: {}
+      family: {
+        monthlyElecSum: '-',
+        dailyElecSum: '-'
+      }
     }
   },
   activated: function () {
     let _this = this
-    let param = {
-      terminalId: '888'
+    console.log('家庭能效')
+    let terminalId = window.localStorage.getItem('terminalId')
+    if (terminalId != '0') {
+      let param = {
+        terminalId: terminalId
+      }
+      console.log(param)
+      this.$store.dispatch('family', param).then(function (res) {
+        console.log(res)
+        if (res.list) {
+          _this.family = res.list
+        }
+      })
+    } else {
+      _this.family.monthlyElecSum = '-'
+      _this.family.dailyElecSum = '-'
     }
-    this.$store.dispatch('family', param).then(function (res) {
-      console.log(res)
-      _this.family = res.list[0]
-    })
   },
   methods: {
     toElecount () {

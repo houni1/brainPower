@@ -49,26 +49,34 @@ export default {
       } else if (_this.surepass == '') {
         alert('请输入确认密码')
       } else {
-        if (_this.pass === _this.surepass) {
-          console.log('next')
-          let param = {
-            mobilePhone: _this.phone,
-            password: _this.surepass,
-            verificationCode: _this.code
-          }
-          this.$store.dispatch('reset', param).then(function (res) {
-            console.log(res)
-            if (res.status == '0') {
-              alert('密码修改成功')
-              this.$router.push('/login')
-            } else if (res.status == '1') {
-              alert(res.message)
+        // let regx = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,14}$/
+        let regx = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,14}$/
+        if (regx.test(_this.pass)) {
+          if (_this.pass === _this.surepass) {
+            console.log('next')
+            let param = {
+              mobilePhone: _this.phone,
+              password: _this.surepass,
+              verificationCode: _this.code
             }
-          })
+            console.log('修改密码')
+            console.log(param)
+            this.$store.dispatch('reset', param).then(function (res) {
+              console.log(res)
+              if (res.status == '0') {
+                alert('密码修改成功')
+                _this.$router.push('/login')
+              } else if (res.status == '1') {
+                alert(res.message)
+              }
+            })
+          } else {
+            alert('请保证密码一致')
+            _this.pass = ''
+            _this.surepass = ''
+          }
         } else {
-          alert('请保证密码一致')
-          _this.pass = ''
-          _this.surepass = ''
+          alert('密码格式应为6-14位字母加数字')
         }
       }
     }

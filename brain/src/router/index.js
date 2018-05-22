@@ -24,6 +24,7 @@ import myinformation from '../components/Mine/Myinformation.vue'
 import revisephoneone from '../components/Mine/Revisephoneone.vue'
 import revisephonetwo from '../components/Mine/Revisephonetwo.vue'
 import revisename from '../components/Mine/Revisename.vue'
+import mypowername from '../components/Mine/mypowername.vue'
 import mypower from '../components/Mine/Mypower.vue'
 import myfeedback from '../components/Mine/Myfeedback.vue'
 import about from '../components/Mine/about.vue'
@@ -131,6 +132,10 @@ const routes = [{
   name: 'revisename',
   path: '/revisename',
   component: revisename
+}, {
+  name: 'mypowername',
+  path: '/mypowername',
+  component: mypowername
 }, {
   name: 'mypower',
   path: '/mypower',
