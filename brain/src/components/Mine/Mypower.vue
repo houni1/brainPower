@@ -5,7 +5,6 @@
     </Headers>
     <div class="contBox">
       <group>
-        <cell title="终端MAC地址" :value="data.macId" is-link></cell>
         <cell title="电力户号别名" :value="data.name" is-link :link="{name:'mypowername', params: {id: data.id, name: data.name}}"></cell>
         <div class="city">
           <p class="city_p">
@@ -13,7 +12,9 @@
             <x-address @on-hide="cityfn(flag, city)" :placeholder="data.region" class="cityBox" title="" v-model="city" raw-value :list="cityarr" value-text-align="right"></x-address>
           </p>
         </div>
-        <cell title="电力户号" :value="data.code" is-link></cell>
+        <cell title="电力户号" :value="data.code"></cell>
+        <cell title="终端MAC地址" :value="data.macId"></cell>
+        <cell title="终端版本号" :value="data.version"></cell>
       </group>
     </div>
     <div class="btnBox" @click="cancelBind" v-if="isdisable">
@@ -25,7 +26,7 @@
       <span>解除绑定</span>
     </div>
     <confirm v-model="iscancel"
-      :title="解除绑定"
+      title="解除绑定"
       @on-cancel="onCancel"
       @on-confirm="onConfirm">
         <p style="text-align:center;">是否确认解除绑定</p>
@@ -111,7 +112,8 @@ export default {
       this.$store.dispatch('unbind', param).then(function (res) {
         console.log(res)
         // alert(res.message)
-        _this.$router.push('/Mine')
+        _this.data = {}
+        _this.$router.back()
       })
     },
     filterCity (data) {

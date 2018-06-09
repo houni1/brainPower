@@ -7,7 +7,7 @@
       <p><slot name="title">标题</slot></p>
       <span class="action"><slot name="action" @click="action"></slot></span>
     </div>
-    <div v-show="isiOS" class="iosbox">
+    <div v-if="isiOS" class="iosbox">
       <div class="headersios">
         <span class="backIcon" @click="goBack">
           <img src="../../assets/images/icon/icon_back.png" alt="">
@@ -16,7 +16,7 @@
         <span class="action"><slot name="action" @click="action"></slot></span>
       </div>
     </div>
-    <div v-show="isPhoneX" class="iphonexbox">
+    <div v-if="isPhoneX" class="iphonexbox">
       <div class="headersios">
         <span class="backIcon" @click="goBack">
           <img src="../../assets/images/icon/icon_back.png" alt="">

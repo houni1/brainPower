@@ -37,6 +37,7 @@
         </div>
       </pull-to>
     </div>
+    <p class="refresh-txt">下拉刷新</p>
     <alert v-model="show" title="提示消息">网关处于离线状态，仅能查询历史数据，部分功能将不可用</alert>
   </div>
 </template>
@@ -142,6 +143,8 @@ export default {
         // _this.$root.reload()
         // _this.$router.replace('/')
         _this.homeinit()
+        // 触发设备列表更新
+        this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
         loaded('done')
       }, 2000)
     },
@@ -208,7 +211,8 @@ export default {
 </script>
 
 <style lang='less' scoped>
-#Home {
+  .refresh-txt {text-align: center; position: fixed; width: 100%; left:0;bottom: 60px;font-size: 10px;color: #999;z-index: 999;}
+  #Home {
   flex: 1;
   overflow: scroll;
   padding-bottom: 53px;

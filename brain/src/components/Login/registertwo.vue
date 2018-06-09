@@ -5,12 +5,14 @@
     </Headers>
     <div class="contBox">
       <p class="item phone">
-        <span>密码</span>
-        <input class="inp inp_phone" type="password" v-model="pass" placeholder="请设置登录密码">
+        <span>密码<span style="color: #fff">密码</span></span>
+        <input class="inp inp_phone" :type="type" v-model="pass" placeholder="请设置登录密码">
+        <i class="eye" @click="changeEye(0)" :class="{'active': type == 'text'}"></i>
       </p>
       <p class="item yanzm">
         <span>确认密码</span>
-        <input class="inp" type="password" v-model="surepass" placeholder="再次确认登录密码">
+        <input class="inp" :type="type2" v-model="surepass" placeholder="再次确认登录密码">
+        <i class="eye" @click="changeEye(1)" :class="{'active': type2 == 'text'}"></i>
       </p>
     </div>
     <div class="btnBox">
@@ -30,7 +32,9 @@ export default {
       phone: '',
       code: '',
       pass: '',
-      surepass: ''
+      surepass: '',
+      type: 'password',
+      type2: 'password'
     }
   },
   components: {
@@ -84,13 +88,31 @@ export default {
           alert('密码格式应为6-14位字母加数字')
         }
       }
+    },
+    changeEye (position) {
+      if (position == 0) {
+        if (this.type == 'password') {
+          this.type = 'text'
+        } else {
+          this.type = 'password'
+        }
+      }
+      if (position == 1) {
+        if (this.type2 == 'password') {
+          this.type2 = 'text'
+        } else {
+          this.type2 = 'password'
+        }
+      }
     }
   }
 }
 </script>
 
 <style scoped lang='less'>
-.contBox {
+  .eye {position: absolute;right: 15px;top:15px;width: 20px;height: 20px;background: url("../../assets/images/login/eye-open.png")center no-repeat;background-size: 20px;}
+  .active {background: url("../../assets/images/login/eye-close.png")center no-repeat;background-size: 20px;}
+  .contBox {
   width: 100%;
   height: 101px;
   background: #fff;
@@ -98,6 +120,7 @@ export default {
   box-sizing: border-box;
   margin-top: 10px;
   margin-bottom: 30px;
+  p{position: relative}
   .item {
     line-height: 50px;
     display: flex;

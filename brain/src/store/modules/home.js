@@ -2,10 +2,11 @@
  * Created by lx on 2018/3/1.
  */
 import API from '../../cores/api.js'
-// import * as types from '../mutation-types'
+import * as types from '../mutation-types'
 
 const state = {
-  homeData: {}
+  homeData: {},
+  wiringList: {}
 }
 
 const actions = {
@@ -53,6 +54,7 @@ const actions = {
   wiringList: function ({commit}, data) {
     return new Promise((resolve, reject) => {
       API.wiringList(data).then((res) => {
+        commit(types.WIRINGLIST, res.data)
         resolve(res.data)
       }, (error) => {
         reject(error)
@@ -148,10 +150,23 @@ const actions = {
         reject(error)
       })
     })
+  },
+  // 删除设备
+  editName: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.editName(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
   }
 }
 
 const mutations = {
+  [types.WIRINGLIST] (state, data) {
+    state.wiringList = data
+  }
 }
 
 const getters = {}

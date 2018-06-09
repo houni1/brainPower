@@ -5,13 +5,14 @@
           <p class="titleTxt">我的电器</p>
       </div>
       <div class="wiringBox">
-        <div class="wiring_item" v-for="(item, index) in deviceDataList" :key="index" @click="toEleDetail(item.id, item.deviceType)">
-          <div class="wiring_icon">
+        <div class="wiring_item" v-for="(item, index) in wiringList.list" :key="index" @click="toEleDetail(item)">
+          <div class="wiring_icon" :class="{'noOnline': item.onlineStatus == 0}">
             <img src="../../assets/images/home/icon_jiashiqi.png" alt="">
           </div>
           <div class="wiring_cont">
-            <p class="wiring_name">{{item.name}}({{item.roomName}})</p>
-            <p class="wiring_power">当前功率：{{item.currentPower}}W</p>
+            <p class="wiring_name" :class="{'noOnlineTxt': item.onlineStatus == 0}">{{item.name}}({{item.roomName}})</p>
+            <p class="wiring_power" v-if="item.onlineStatus == 1">当前功率：{{item.currentPower}}W</p>
+            <p class="wiring_power" v-else>设备离线</p>
           </div>
           <div class="wiring_rightBox">
             <!-- <div class="wiring_btn" @click.stop="isopen(flag)">
@@ -33,6 +34,7 @@
 
 <script>
 import { Alert } from 'vux'
+import { mapState } from 'vuex'
 export default {
   name: 'wiringList',
   props: ['showDetail'],
@@ -80,6 +82,7 @@ export default {
         }
         this.$store.dispatch('wiringList', param).then(function (res) {
           console.log('设备列表11111')
+          console.log('999', _this.wiringList)
           console.log(res.list)
           if (res.list) {
             _this.deviceDataList = res.list
@@ -89,13 +92,17 @@ export default {
         _this.deviceDataList = []
       }
     },
-    toEleDetail (deviceId, deviceType) {
+    toEleDetail (item) {
       if (this.showDetail.detailflag) {
-        console.log(deviceType)
-        if (deviceType == '0' || deviceType == '2') {
-          this.$router.push({name: 'tabbar', params: { deviceId: deviceId }})
+        if (item.onlineStatus == 0) {
+          // 设别离线
+          this.$vux.toast.text('设备已离线', 'middle')
+          return
+        }
+        if (item.deviceType == '0' || item.deviceType == '2') {
+          this.$router.push({name: 'tabbar', params: { deviceId: item.id }})
         } else {
-          this.$router.push({name: 'eleDetails', params: { deviceId: deviceId }})
+          this.$router.push({name: 'eleDetails', params: { deviceId: item.id }})
         }
       } else {
         // alert('网关处于离线状态')
@@ -140,12 +147,19 @@ export default {
         return false
       }
     }
+  },
+  computed: {
+    ...mapState({
+      wiringList: state => state.home.wiringList
+    })
   }
 }
 </script>
 
 <style lang='less' scoped>
 .wiringList {
+    .noOnline {opacity: 0.4;}
+    .noOnlineTxt {color: #888!important;}
     width: 100%;
     height: auto;
     background: #fff;

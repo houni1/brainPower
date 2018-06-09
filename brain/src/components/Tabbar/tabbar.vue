@@ -7,7 +7,7 @@
           <p @click="show2" :class="{isActive: isActive2}">空调遥控器</p>
         </div>
       </div>
-      <p slot="action" @click="moreBox(moreshow)" class="moreBox">
+      <p slot="action" @click="moreShow = !moreShow" class="moreBox">
         <img src="../../assets/images/tabbar/icon_more.png" alt="">
       </p>
     </Headers>
@@ -21,55 +21,13 @@
       <div class="moreshow"></div>
     </div>
     <confirm v-model="iscancel"
-      :title="删除设备"
+      title="删除设备"
       @on-cancel="onCancel"
       @on-confirm="onConfirm">
         <p style="text-align:center;">是否确定删除该设备</p>
     </confirm>
     <div class="tab_list">
       <div v-if="flag" class="contBox jack">
-        <!-- <div class="box">
-            <p class="title">空调智能插座</p>
-            <p class="state">
-            <img src="../../assets/images/eledetails/icon_operation.png" alt="">
-            <span class="stateTxt">运行中</span>
-            </p>
-            <p class="switch" @click="isopenBtn">
-              <img v-if="isopen" src="../../assets/images/eledetails/switch_open.png" alt="">
-              <img v-else src="../../assets/images/eledetails/switch_close.png" alt="">
-            </p>
-            <div class="infoBox">
-            <p class="info_title">
-                <span>基本信息</span>
-            </p>
-            <ul class="info_list">
-                <li class="list_item">
-                <span class="list_name">房间</span>
-                <span class="list_cont">卧室</span>
-                </li>
-                <li class="list_item">
-                <span class="list_name">设备名称</span>
-                <span class="list_cont">空调</span>
-                </li>
-                <li class="list_item">
-                <span class="list_name">当前功率</span>
-                <span class="list_cont">30W</span>
-                </li>
-                <li class="list_item">
-                <span class="list_name">电流</span>
-                <span class="list_cont">5A</span>
-                </li>
-                <li class="list_item">
-                <span class="list_name">今日用电量</span>
-                <span class="list_cont"><label class="color">10</label>度</span>
-                </li>
-                <li class="list_item">
-                <span class="list_name">历史总用电量</span>
-                <span class="list_cont"><label class="color">1000</label>度</span>
-                </li>
-            </ul>
-            </div>
-        </div> -->
         <div class="box">
           <p class="title">{{deviceDetail.name}}</p>
           <p class="state" v-if="deviceDetail.onlineStatus == '1'">
@@ -95,7 +53,7 @@
             <ul class="info_list">
               <li class="list_item">
                 <span class="list_name">房间</span>
-                <span class="list_cont">{{deviceDetail.roomName}}</span>
+                <span class="list_cont" @click="editFj">{{deviceDetail.roomName}} <i class="fj-edit"></i></span>
               </li>
               <li class="list_item">
                 <span class="list_name">设备名称</span>
@@ -127,15 +85,15 @@
             <p class="txt">设定温度</p>
             <p class="num"><span class="number">{{data.cTemp}}</span>℃</p>
             <p class="state">运行中</p>
-            <dl class="left">
-              <dt>
-                <span class="pic">
-                  <img src="../../assets/images/tabbar/icon_22.png" alt="">
-                </span>
-                <span class="left_txt">室内温度</span>
-              </dt>
-              <dd>28℃</dd>
-            </dl>
+            <!--<dl class="left">-->
+              <!--<dt>-->
+                <!--<span class="pic">-->
+                  <!--<img src="../../assets/images/tabbar/icon_22.png" alt="">-->
+                <!--</span>-->
+                <!--<span class="left_txt">室内温度</span>-->
+              <!--</dt>-->
+              <!--<dd>28℃</dd>-->
+            <!--</dl>-->
             <div class="right" @click="isflag(cOnOff, 'cOnOff')">
               <img v-if="cOnOff == '关闭'" src="../../assets/images/tabbar/icon_close_big.png" alt="">
               <img v-else-if="cOnOff == '打开'" src="../../assets/images/tabbar/icon_open_big.png" alt="">
@@ -218,12 +176,29 @@
         </div>
       </div>
     </div>
+
+    <popup v-model="popShow" height="250px" is-transparent>
+      <div style="width: 95%;background-color:#fff;height:200px;margin:0 auto;border-radius:5px;padding-top:10px;">
+        <h4 class="pop-title">修改房间名</h4>
+        <div class="input-name">
+          <input type="text" placeholder="请输入名称" v-model="roomName">
+        </div>
+        <div style="padding:20px 15px;">
+          <x-button type="primary" @click.native="saveFj">保存</x-button>
+        </div>
+      </div>
+    </popup>
+    <actionsheet
+      v-model="moreShow"
+      :menus="menus"
+      @on-click-menu="clickMore" show-cancel></actionsheet>
+
   </div>
 </template>
 
 <script>
 import Headers from '../Common/Headers.vue'
-import { Popover, Confirm } from 'vux'
+import { Popover, Confirm, Popup, XButton, Actionsheet } from 'vux'
 export default {
   name: 'tabbar',
   data () {
@@ -240,13 +215,24 @@ export default {
       cKey: '',
       cOnOff: '关闭',
       moreshow: false,
-      iscancel: false
+      iscancel: false,
+      popShow: false,
+      roomName: '',
+      moreShow: false,
+      menus: {
+        menu1: '删除设备',
+        menu2: '红外重置',
+        menu3: '定时刷新'
+      }
     }
   },
   components: {
     Headers,
     Popover,
-    Confirm
+    Confirm,
+    Popup,
+    XButton,
+    Actionsheet
   },
   created () {
     console.log('getparams')
@@ -271,16 +257,22 @@ export default {
       console.log('on cancel')
     },
     onConfirm (msg) {
+      let _this = this
       let param = {
         deviceId: this.deviceId
       }
       // alert(param)
       this.$store.dispatch('deletedevice', param).then(function (res) {
-        // alert(JSON.stringify(res))
+        if (res.status == 0) {
+          _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
+          _this.$router.back()
+        } else {
+          _this.$vux.toast.text(res.message, 'middle')
+        }
       })
     },
     deleted () {
-      // alert('删除设备！！')
+      // alert('删除设备！！')log
       this.iscancel = true
     },
     reset () {
@@ -402,12 +394,12 @@ export default {
     show2 () {
       console.log(2)
       // alert(this.deviceDetail.irMatchStatus)
-      this.flag = false
-      this.isActive1 = false
-      this.isActive2 = true
       if (this.deviceDetail.irMatchStatus == '0') {
         alert('您的设备尚未学习红外控制器')
-        return false
+      } else {
+        this.flag = false
+        this.isActive1 = false
+        this.isActive2 = true
       }
     },
     reduce () {
@@ -419,12 +411,47 @@ export default {
       this.data.cTemp = Number(this.data.cTemp) + 1
       // alert(this.data.cTemp)
       this.isflag(this.data.cTemp, 'cTemp')
+    },
+    // 修改房间名
+    editFj (oldName) {
+      this.popShow = true
+    },
+    saveFj () {
+      let _this = this
+      let params = {
+        deviceId: this.deviceDetail.id,
+        roomName: this.roomName
+      }
+      this.$store.dispatch('editName', params).then(function (res) {
+        _this.deviceDetail.roomName = _this.roomName
+        _this.popShow = false
+      })
+    },
+    clickMore (key) {
+      if (key == 'menu1') {
+        this.deleted()
+      }
+      if (key == 'menu2') {
+        this.reset()
+      }
     }
   }
 }
 </script>
 
 <style scoped lang='less'>
+  .fj-edit {display:inline-block;width: 20px;height: 20px;background: url("../../assets/images/home/fj-edit.png")center no-repeat;background-size:15px;vertical-align: middle;}
+  .pop-title {text-align: center;font-size: 12px;text-align: center;padding: 5px;}
+  .input-name {
+    padding: 15px;
+    input {
+      width: 100%;
+      height: 40px;
+      border-bottom: 1px solid #eee;
+      border-radius: 4px;
+      text-align: center;
+    }
+  }
 .morelist {
   position: absolute;
   right: 3px;

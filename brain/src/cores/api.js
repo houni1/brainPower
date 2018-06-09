@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 
 // 基本配置
@@ -17,6 +18,10 @@ axios.defaults.withCredentials = true
 axios.interceptors.request.use(function (config) {
   console.log('请求前')
   // console.log(config)
+  Vue.$vux.loading.show()
+  setTimeout(function () {
+    Vue.$vux.loading.hide()
+  }, 30000)
   return config
 }, function (error) {
   console.log('请求前错误')
@@ -26,6 +31,7 @@ axios.interceptors.request.use(function (config) {
 // 添加一个响应拦截器
 axios.interceptors.response.use(function (response) {
   console.log('请求后')
+  Vue.$vux.loading.hide()
   // console.log(response.data)
   return response.data
 })
@@ -57,7 +63,8 @@ const home = {
   send: '/deviceIr/send/',
   resetkt: '/deviceIr/reset/',
   homeinit: '/base/init/',
-  deletedevice: '/device/delete/'
+  deletedevice: '/device/delete/',
+  editName: '/device/edit/'
 }
 
 // function apiGet (url, query) {
@@ -118,6 +125,7 @@ export default {
   account: (data) => apiPost(user.account, data), //  电力户号资料
   feedback: (data) => apiPost(user.feedback, data), //  用户反馈
   editAccount: (data) => apiPost(user.editAccount, data), //  修改电力户号地区
+  editName: (data) => apiPost(home.editName, data), //  修改房间名
   apiGet: apiGet, // GET接口
   apiPost: apiPost // POST接口
 }
