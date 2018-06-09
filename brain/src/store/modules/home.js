@@ -160,6 +160,36 @@ const actions = {
         reject(error)
       })
     })
+  },
+  // 扫描设备列表
+  scan: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.scan(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 添加设备
+  add: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.add(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  // 添加设备
+  queryChangeInfo: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.queryChangeInfo(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
   }
 }
 

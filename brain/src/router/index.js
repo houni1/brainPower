@@ -5,6 +5,8 @@ import Main from '@/modules/Main.vue'
 // 首页
 import Home from '@/modules/Home.vue'
 // 扫码
+import wifiList from '../components/Home/wifiList.vue'
+// 设备列表
 import sweepcode from '../components/Common/sweepcode.vue'
 // 绑定终端设备
 import terminal from '../components/Terminal/Terminal.vue'
@@ -152,6 +154,10 @@ const routes = [{
   name: 'sweepcode',
   path: '/sweepcode',
   component: sweepcode
+}, {
+  name: 'wifiList',
+  path: '/wifiList',
+  component: wifiList
 }]
 export default new Router({
   routes

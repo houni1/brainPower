@@ -2,7 +2,7 @@
     <div class="wiringList" id="wiringList">
       <!-- <alert v-model="lineshow" title="提示消息">网关处于离线状态</alert> -->
       <div class="titleBox">
-          <p class="titleTxt">我的电器</p>
+          <p class="titleTxt">我的电器 <span class="add-wiring" @click="goAddList">+ 添加设备</span></p>
       </div>
       <div class="wiringBox">
         <div class="wiring_item" v-for="(item, index) in wiringList.list" :key="index" @click="toEleDetail(item)">
@@ -146,6 +146,9 @@ export default {
         this.$emit('alertshow', this.show)
         return false
       }
+    },
+    goAddList () {
+      this.$router.push('/wifiList')
     }
   },
   computed: {
@@ -157,6 +160,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
+  .add-wiring {float: right;font-weight: normal;color: #999;}
 .wiringList {
     .noOnline {opacity: 0.4;}
     .noOnlineTxt {color: #888!important;}

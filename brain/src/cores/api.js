@@ -64,7 +64,10 @@ const home = {
   resetkt: '/deviceIr/reset/',
   homeinit: '/base/init/',
   deletedevice: '/device/delete/',
-  editName: '/device/edit/'
+  editName: '/device/edit/',
+  scan: '/device/scan/',
+  add: '/device/add/',
+  queryChangeInfo: '/device/queryChangeInfo/'
 }
 
 // function apiGet (url, query) {
@@ -126,6 +129,9 @@ export default {
   feedback: (data) => apiPost(user.feedback, data), //  用户反馈
   editAccount: (data) => apiPost(user.editAccount, data), //  修改电力户号地区
   editName: (data) => apiPost(home.editName, data), //  修改房间名
+  scan: (data) => apiPost(home.scan, data), //  扫描设备列表
+  add: (data) => apiPost(home.add, data), //  添加设备
+  queryChangeInfo: (data) => apiPost(home.queryChangeInfo, data), //  通知
   apiGet: apiGet, // GET接口
   apiPost: apiPost // POST接口
 }

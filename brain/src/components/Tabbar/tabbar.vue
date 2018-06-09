@@ -223,7 +223,9 @@ export default {
         menu1: '删除设备',
         menu2: '红外重置',
         menu3: '定时刷新'
-      }
+      },
+      deleflag: true,
+      num: 0
     }
   },
   components: {
@@ -264,15 +266,38 @@ export default {
       // alert(param)
       this.$store.dispatch('deletedevice', param).then(function (res) {
         if (res.status == 0) {
-          _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
-          _this.$router.back()
+          // 生成定时器
+          var timer = setInterval(function () {
+            if (_this.deleflag && _this.num < 5) {
+              _this.clock()
+              _this.num ++
+            } else {
+              // 清除定时器
+              window.clearInterval(timer)
+              _this.num = 0
+              _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
+              _this.$router.back()
+            }
+          }, 5000)
         } else {
           _this.$vux.toast.text(res.message, 'middle')
         }
       })
     },
+    // 定时器通知
+    clock () {
+      let params = {
+        queryType: 'delete',
+        deviceId: this.deviceId
+      }
+      this.$store.dispatch('queryChangeInfo', params).then((res) => {
+        if (res.status == 0) {
+          this.deleflag = false
+        }
+      })
+    },
     deleted () {
-      // alert('删除设备！！')log
+      // alert('删除设备！！')
       this.iscancel = true
     },
     reset () {

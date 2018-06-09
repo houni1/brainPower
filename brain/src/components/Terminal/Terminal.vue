@@ -70,20 +70,25 @@ export default {
     Cell
   },
   created () {
-    console.log('绑定终端啊啊啊啊啊')
-    console.log(window.location.href)
     let user = window.localStorage.getItem('user')
     let userphone = JSON.parse(user).mobilePhone
     this.userphone = userphone
     let _url = window.location.href
     let pos = _url.indexOf('=')
     let macid = _url.substr(pos + 1)
-    console.log(macid)
     this.macId = macid
     // console.log(this.$route.params.macId)
     // this.macId = this.$route.params.macId
   },
   activated: function () {
+    let user = window.localStorage.getItem('user')
+    let userphone = JSON.parse(user).mobilePhone
+    this.userphone = userphone
+    let _url = window.location.href
+    let pos = _url.indexOf('=')
+    let macid = _url.substr(pos + 1)
+    this.macId = macid
+
     this.regionId = window.localStorage.getItem('regionId')
     this.memberId = window.localStorage.getItem('memberId')
     this.regionName = window.localStorage.getItem('regionName')
@@ -91,8 +96,6 @@ export default {
   },
   methods: {
     sureBind () {
-      console.log('确认绑定终端')
-      console.log(this.regionId)
       let _this = this
       if (_this.name == '' && _this.code == '') {
         alert('电力户号别名和电力户号不能为空')
