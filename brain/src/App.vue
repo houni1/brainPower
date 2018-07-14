@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition :name="transitionName">
+    <transition :name="slideAction">
       <keep-alive><router-view v-if="isRouterAlive" class="child-view" :class="{ 'child-top' : isShowTop}"></router-view></keep-alive>
     </transition>
   </div>
@@ -35,17 +35,21 @@
       }
     },
     watch: {
-      '$route' (to, from) {
-        if (to.path === '/' || to.path === '/Mine' || (this.viewFrom === to.path && this.viewTo === from.path)) {
-          this.transitionName = 'slide-right'
-        } else {
-          this.transitionName = 'slide-left'
-        }
-        this.viewFrom = from.path
-        this.viewTo = to.path
-      }
+      // '$route' (to, from) {
+      //   if (to.path === '/' || to.path === '/Mine' || (this.viewFrom === to.path && this.viewTo === from.path)) {
+      //     this.transitionName = 'slide-right'
+      //   } else {
+      //     this.transitionName = 'slide-left'
+      //   }
+      //   this.viewFrom = from.path
+      //   this.viewTo = to.path
+      // }
     },
-    computed: mapState({})
+    computed: {
+      ...mapState({
+        slideAction: state => state.home.slideAction
+      })
+    }
   }
 </script>
 

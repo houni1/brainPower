@@ -1,1 +1,2 @@
 export const WIRINGLIST = 'WIRINGLIST'
+export const SLIDEACTION = 'SLIDEACTION'

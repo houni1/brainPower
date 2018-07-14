@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     goBack () {
+      this.$store.dispatch('slide')
       this.$router ? this.$router.back() : window.history.back()
     },
     action () {

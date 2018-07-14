@@ -6,10 +6,14 @@ import * as types from '../mutation-types'
 
 const state = {
   homeData: {},
-  wiringList: {}
+  wiringList: {},
+  slideAction: 'slide-left'
 }
 
 const actions = {
+  slide: function ({commit}) {
+    commit(types.SLIDEACTION)
+  },
   // 室外环境
   outdoor: function ({commit}, data) {
     return new Promise((resolve, reject) => {
@@ -207,6 +211,12 @@ const mutations = {
         }
       }
     })
+  },
+  [types.SLIDEACTION] (state) {
+    state.slideAction = 'slide-right'
+    setTimeout(function () {
+      state.slideAction = 'slide-left'
+    }, 200)
   }
 }
 
