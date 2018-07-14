@@ -101,6 +101,12 @@ export default {
     console.log(user)
     if (user) {
       this.$router.push('/')
+      // 定时刷新主页 30秒刷新
+      setInterval(() => {
+        this.homeinit()
+        // 触发设备列表更新
+        this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
+      }, 30000)
     } else {
       this.$router.push('/login')
     }

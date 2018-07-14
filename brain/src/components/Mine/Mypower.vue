@@ -12,7 +12,7 @@
             <x-address @on-hide="cityfn(flag, city)" :placeholder="data.region" class="cityBox" title="" v-model="city" raw-value :list="cityarr" value-text-align="right"></x-address>
           </p>
         </div>
-        <cell title="电力户号" :value="data.code"></cell>
+        <cell is-link title="电力户号" :value="data.code" @click.native="goChangeNumber(data)"></cell>
         <cell title="终端MAC地址" :value="data.macId"></cell>
         <cell title="终端版本号" :value="data.version"></cell>
       </group>
@@ -153,6 +153,9 @@ export default {
     },
     cancelBind () {
       this.iscancel = true
+    },
+    goChangeNumber (detail) {
+      this.$router.push({path: '/changePowerNumber', query: {detail: detail}})
     }
   }
 }

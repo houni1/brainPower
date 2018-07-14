@@ -6,10 +6,11 @@ import store from './store'
 import router from './router'
 import echarts from 'echarts'
 
-import { AjaxPlugin, ToastPlugin, LoadingPlugin } from 'vux'
+import { AjaxPlugin, ToastPlugin, LoadingPlugin, ConfirmPlugin } from 'vux'
 Vue.use(AjaxPlugin)
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
+Vue.use(ConfirmPlugin)
 
 Vue.prototype.$echarts = echarts
 /* eslint-disable no-new */

@@ -27,7 +27,7 @@
         <p style="text-align:center;">是否确定删除该设备</p>
     </confirm>
     <div class="tab_list">
-      <div v-if="flag" class="contBox jack">
+      <div v-show="flag" class="contBox jack">
         <div class="box">
           <p class="title">{{deviceDetail.name}}</p>
           <p class="state" v-if="deviceDetail.onlineStatus == '1'">
@@ -79,12 +79,13 @@
           </div>
         </div>
       </div>
-      <div v-else class="telecontroller">
+      <div v-show="!flag" class="telecontroller">
         <div class="wrap">
           <div class="box">
             <p class="txt">设定温度</p>
             <p class="num"><span class="number">{{data.cTemp}}</span>℃</p>
-            <p class="state">运行中</p>
+            <p class="state" v-if="data.runStatus == 1">运行中</p>
+            <p class="state" v-else>已关闭</p>
             <!--<dl class="left">-->
               <!--<dt>-->
                 <!--<span class="pic">-->
@@ -193,12 +194,24 @@
       :menus="menus"
       @on-click-menu="clickMore" show-cancel></actionsheet>
 
+    <popup v-model="learning" height="220px" is-transparent>
+      <div style="width: 95%;background-color:#fff;height:200px;margin:0 auto;border-radius:5px;padding-top:10px;">
+        <div style="text-align: center">
+          <spinner type="ripple" size="40px"></spinner>
+        </div>
+        <div style="padding:20px 15px; text-align: center;line-height: 1.4">
+          使用空调遥控器对准插座按下开关键进行学习 <br>
+          学习完成后会有"学习成功"提示。
+        </div>
+      </div>
+    </popup>
+
   </div>
 </template>
 
 <script>
 import Headers from '../Common/Headers.vue'
-import { Popover, Confirm, Popup, XButton, Actionsheet } from 'vux'
+import { Popover, Confirm, Popup, XButton, Actionsheet, Spinner } from 'vux'
 export default {
   name: 'tabbar',
   data () {
@@ -227,7 +240,8 @@ export default {
       deleflag: true,
       num: 0,
       cWindDir: 0,
-      key: ''
+      key: '',
+      learning: false
     }
   },
   components: {
@@ -236,9 +250,12 @@ export default {
     Confirm,
     Popup,
     XButton,
-    Actionsheet
+    Actionsheet,
+    Spinner
   },
   created () {
+  },
+  activated () {
     let _this = this
     _this.deviceId = this.$route.params.deviceId
     let param = {
@@ -267,8 +284,6 @@ export default {
           break
       }
     })
-  },
-  activated () {
     this.getcreated()
   },
   methods: {
@@ -326,6 +341,7 @@ export default {
       // alert(JSON.stringify(param))
       this.$store.dispatch('resetkt', param).then(function (res) {
         // alert(JSON.stringify(res))
+        _this.deviceDetail.irMatchStatus = 0
       })
     },
     moreBox (flag) {
@@ -455,6 +471,7 @@ export default {
           // alert(JSON.stringify(res))
           if (res.status == '0') {
             _this.getcreated()
+            _this.data.runStatus = flagstr
           }
         })
       } else if (status == '0') {
@@ -469,10 +486,34 @@ export default {
       this.isActive2 = false
     },
     show2 () {
-      console.log(2)
       // alert(this.deviceDetail.irMatchStatus)
       if (this.deviceDetail.irMatchStatus == '0') {
-        alert('您的设备尚未学习红外控制器')
+        let _this = this
+        this.$vux.confirm.show({
+          title: '操作提示',
+          content: '您的设备尚未学习红外控制器' + '<br>' + '前去学习？',
+          onCancel () {
+            console.log('plugin cancel')
+          },
+          onConfirm () {
+            console.log(_this.learning)
+            _this.learning = true
+            // 循环调用查询
+            var timer3 = setInterval(function () {
+              if (_this.deviceDetail.irMatchStatus == 0) {
+                _this.getcreated()
+              } else {
+                // 清除定时器
+                _this.$vux.toast.show({
+                  text: '学习成功'
+                })
+                _this.show2()
+                window.clearInterval(timer3)
+                _this.learning = false
+              }
+            }, 5000)
+          }
+        })
       } else {
         this.flag = false
         this.isActive1 = false
@@ -480,7 +521,7 @@ export default {
       }
     },
     reduce () {
-      if (this.data.cTemp - 1 < 0) {
+      if (Number(this.data.cTemp) - 1 < 0) {
         this.$vux.toast.show({
           text: '温度不能小于0度',
           width: '12em',
@@ -492,7 +533,7 @@ export default {
       this.isflag(this.data.cTemp, 'cTemp')
     },
     add () {
-      if (this.data.cTemp + 1 > 30) {
+      if (Number(this.data.cTemp) + 1 > 30) {
         this.$vux.toast.show({
           text: '温度不能高于30度',
           width: '12em',
@@ -525,6 +566,7 @@ export default {
       }
       if (key == 'menu2') {
         this.reset()
+        this.show1()
       }
     }
   }

@@ -31,9 +31,9 @@ export default {
   },
   activated: function () {
     this.initDate()
-    setTimeout(() => {
-      this.initDate()
-    }, 200)
+    // setInterval(() => {
+    //   this.initDate()
+    // }, 30000)
   },
   methods: {
     initDate () {

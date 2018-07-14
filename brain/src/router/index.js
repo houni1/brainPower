@@ -29,6 +29,7 @@ import revisename from '../components/Mine/Revisename.vue'
 import mypowername from '../components/Mine/mypowername.vue'
 import mypower from '../components/Mine/Mypower.vue'
 import myfeedback from '../components/Mine/Myfeedback.vue'
+import changePowerNumber from '../components/Mine/changePowerNumber.vue'
 import about from '../components/Mine/about.vue'
 // 登录
 import Login from '@/components/Login/Login.vue'
@@ -158,6 +159,10 @@ const routes = [{
   name: 'wifiList',
   path: '/wifiList',
   component: wifiList
+}, {
+  name: 'changePowerNumber',
+  path: '/changePowerNumber',
+  component: changePowerNumber
 }]
 export default new Router({
   routes
