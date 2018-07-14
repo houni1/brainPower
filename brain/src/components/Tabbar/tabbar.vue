@@ -145,7 +145,7 @@
             </p>
             <span class="txt">送风</span>
           </div>
-          <div class="btns_item" @click="isflag('风向', 'cWindDir')">
+          <div class="btns_item" @click="windDirection">
             <p class="pic">
               <img src="../../assets/images/tabbar/icon_bf_pre.png" alt="">
               <!-- <img src="../../assets/images/tabbar/icon_bf_nor.png" alt=""> -->
@@ -225,7 +225,9 @@ export default {
         menu3: '定时刷新'
       },
       deleflag: true,
-      num: 0
+      num: 0,
+      cWindDir: 0,
+      key: ''
     }
   },
   components: {
@@ -237,18 +239,33 @@ export default {
     Actionsheet
   },
   created () {
-    console.log('getparams')
-    console.log(this.$route.params)
     let _this = this
     _this.deviceId = this.$route.params.deviceId
     let param = {
       deviceId: _this.deviceId
     }
     this.$store.dispatch('tabinit', param).then(function (res) {
-      console.log('空调红外')
       // alert(JSON.stringify(res))
       _this.data = res.data.list
       _this.cOnOff = res.data.list.cOnOff
+      _this.key = res.data.list.key
+      switch (_this.data.cWindDir) {
+        case '自动':
+          _this.cWindDir = 0
+          break
+        case '风向1':
+          _this.cWindDir = 1
+          break
+        case '风向2':
+          _this.cWindDir = 2
+          break
+        case '风向3':
+          _this.cWindDir = 3
+          break
+        case '风向4':
+          _this.cWindDir = 4
+          break
+      }
     })
   },
   activated () {
@@ -370,6 +387,42 @@ export default {
         }
       })
     },
+    windDirection () {
+      console.log('this.cWindDir', this.cWindDir)
+      if (this.cWindDir + 1 > 4) {
+        this.cWindDir = 0
+      } else {
+        this.cWindDir ++
+      }
+      let cWindDirStr = ''
+      switch (this.cWindDir) {
+        case 0:
+          cWindDirStr = '自动'
+          break
+        case 1:
+          cWindDirStr = '风向1'
+          break
+        case 2:
+          cWindDirStr = '风向2'
+          break
+        case 3:
+          cWindDirStr = '风向3'
+          break
+        case 4:
+          cWindDirStr = '风向4'
+          break
+      }
+      let param = {
+        key: this.key,
+        cKey: 4,
+        cWindDir: cWindDirStr,
+        deviceId: this.deviceId,
+        terminalId: window.localStorage.getItem('terminalId')
+      }
+      this.$store.dispatch('send', param).then(() => {
+
+      })
+    },
     getcreated () {
       let _this = this
       _this.deviceId = this.$route.params.deviceId
@@ -378,7 +431,6 @@ export default {
       }
       // alert(JSON.stringify(param))
       this.$store.dispatch('eledetail', param).then(function (res) {
-        console.log(res.data.list[0])
         _this.deviceDetail = res.data.list[0]
         // alert(JSON.stringify(_this.deviceDetail))
       })
@@ -428,11 +480,26 @@ export default {
       }
     },
     reduce () {
+      if (this.data.cTemp - 1 < 0) {
+        this.$vux.toast.show({
+          text: '温度不能小于0度',
+          width: '12em',
+          type: 'warn'
+        })
+        return
+      }
       this.data.cTemp = this.data.cTemp - 1
       this.isflag(this.data.cTemp, 'cTemp')
     },
     add () {
-      console.log('+')
+      if (this.data.cTemp + 1 > 30) {
+        this.$vux.toast.show({
+          text: '温度不能高于30度',
+          width: '12em',
+          type: 'warn'
+        })
+        return
+      }
       this.data.cTemp = Number(this.data.cTemp) + 1
       // alert(this.data.cTemp)
       this.isflag(this.data.cTemp, 'cTemp')

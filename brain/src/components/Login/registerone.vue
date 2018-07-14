@@ -32,6 +32,8 @@
 </template>
 <script>
 import Headers from '../Common/Headers.vue'
+import checkUtil from '../../assets/util/checkUtil'
+
 export default {
   name: 'registerone',
   data () {
@@ -51,8 +53,8 @@ export default {
   },
   methods: {
     getCode () {
-      let phonereg = /^1[3|4|5|8][0-9]\d{4,8}$/
-      if (phonereg.test(this.phone)) {
+      // 修改验证手机号逻辑，之前的已经不能覆盖目前全部手机号
+      if (checkUtil.checkMobile(this.phone)) {
         console.log('获取验证码')
         let _this = this
         console.log(_this.phone)

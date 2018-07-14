@@ -30,15 +30,23 @@ export default {
     }
   },
   activated: function () {
-    let _this = this
-    let regionId = window.localStorage.getItem('regionId')
-    let param = {
-      regionId: regionId
+    this.initDate()
+    setTimeout(() => {
+      this.initDate()
+    }, 200)
+  },
+  methods: {
+    initDate () {
+      let _this = this
+      let regionId = window.localStorage.getItem('regionId')
+      let param = {
+        regionId: regionId
+      }
+      this.$store.dispatch('outdoor', param).then(function (res) {
+        // console.log(res.list)
+        _this.outdoor = res.list
+      })
     }
-    this.$store.dispatch('outdoor', param).then(function (res) {
-      // console.log(res.list)
-      _this.outdoor = res.list
-    })
   }
 }
 </script>

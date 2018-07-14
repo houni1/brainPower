@@ -47,7 +47,9 @@ const user = {
   verification: '/base/verification/',
   account: '/base/account/',
   feedback: '/feedback/save/',
-  editAccount: '/base/editAccount/'
+  editAccount: '/base/editAccount/',
+  getDeviceIrList: '/deviceIr/list',
+  setDeviceScenes: '/deviceIr/scenesControl'
 }
 
 const home = {
@@ -99,6 +101,7 @@ function apiPost (url, data) {
 function apiGet (url) {
   return axios.get(url)
 }
+
 /**
  * 接口请求地址封装
  * 规则：
@@ -132,6 +135,8 @@ export default {
   scan: (data) => apiPost(home.scan, data), //  扫描设备列表
   add: (data) => apiPost(home.add, data), //  添加设备
   queryChangeInfo: (data) => apiPost(home.queryChangeInfo, data), //  通知
+  getDeviceIrList: (data) => apiPost(user.getDeviceIrList, data), // 获取用户已学习的红外设备列表
+  setDeviceScenes: (data) => apiPost(user.setDeviceScenes, data), // 场景控制接口
   apiGet: apiGet, // GET接口
   apiPost: apiPost // POST接口
 }

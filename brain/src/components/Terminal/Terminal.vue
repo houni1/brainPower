@@ -118,7 +118,7 @@ export default {
               let terminalId = res.data.list.terminalId
               // window.localStorage.removeItem('terminalId')
               window.localStorage.setItem('terminalId', terminalId)
-              _this.$router.push('/')
+              _this.$router.replace('/')
             } else if (res.status == '1') {
               alert(res.message)
             } else if (res.status == '-1') {

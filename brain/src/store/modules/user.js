@@ -118,6 +118,24 @@ const actions = {
         reject(error)
       })
     })
+  },
+  getDeviceIrList: function (context, data) {
+    return new Promise((resolve, reject) => {
+      API.getDeviceIrList(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  setDeviceScenes: function (context, data) {
+    return new Promise((resolve, reject) => {
+      API.setDeviceScenes(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
   }
 }
 

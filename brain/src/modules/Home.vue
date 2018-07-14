@@ -211,11 +211,11 @@ export default {
 </script>
 
 <style lang='less' scoped>
-  .refresh-txt {text-align: center; position: fixed; width: 100%; left:0;bottom: 60px;font-size: 10px;color: #999;z-index: 999;}
+  .refresh-txt {text-align: center; position: fixed; width: 100%; left:0;bottom: 70px;font-size: 10px;color: #999;z-index: 999;}
   #Home {
   flex: 1;
   overflow: scroll;
-  padding-bottom: 53px;
+  padding-bottom: 63px;
   position: relative;
   .defaultBox {
     height: 50px;
