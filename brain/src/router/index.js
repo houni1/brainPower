@@ -16,6 +16,8 @@ import Demo from '@/modules/Demo.vue'
 import eleDetails from '../components/Common/eleDetails.vue'
 // tabbar
 import tabbar from '../components/Tabbar/tabbar.vue'
+import timing from '../components/Tabbar/timing.vue'
+import addTiming from '../components/Tabbar/addTiming.vue'
 // 电量统计
 import elecount from '../components/EleCount/elecount.vue'
 // 选择时间
@@ -163,6 +165,14 @@ const routes = [{
   name: 'changePowerNumber',
   path: '/changePowerNumber',
   component: changePowerNumber
+}, {
+  name: 'timing',
+  path: '/timing',
+  component: timing
+}, {
+  name: 'addTiming',
+  path: '/addTiming',
+  component: addTiming
 }]
 export default new Router({
   routes

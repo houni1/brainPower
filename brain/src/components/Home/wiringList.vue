@@ -1,13 +1,14 @@
 <template>
   <div class="wiringList" id="wiringList">
-    <!-- <alert v-model="lineshow" title="提示消息">网关处于离线状态</alert> -->
     <div class="titleBox">
       <p class="titleTxt">我的电器 <span class="add-wiring" @click="goAddList">+ 添加设备</span></p>
     </div>
     <div class="wiringBox">
       <div class="wiring_item" v-for="(item, index) in wiringList.list" :key="index" @click="toEleDetail(item)">
         <div class="wiring_icon" :class="{'noOnline': item.onlineStatus == 0}">
-          <img src="../../assets/images/home/icon_jiashiqi.png" alt="">
+          <img src="../../assets/images/home/icon_jiashiqi.png" v-if="item.deviceType == 0" alt="">
+          <img src="../../assets/images/WechatIMG37.png" v-if="item.deviceType == 4" alt="">
+          <!--插座、烟雾、窗帘、灯、门磁-->
         </div>
         <div class="wiring_cont">
           <p class="wiring_name" :class="{'noOnlineTxt': item.onlineStatus == 0}">{{item.name}}({{item.roomName}})</p>

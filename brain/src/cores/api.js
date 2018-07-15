@@ -16,7 +16,6 @@ axios.defaults.withCredentials = true
 
 // 添加一个请求拦截器
 axios.interceptors.request.use(function (config) {
-  console.log('请求前')
   // console.log(config)
   Vue.$vux.loading.show()
   setTimeout(function () {
@@ -24,13 +23,11 @@ axios.interceptors.request.use(function (config) {
   }, 30000)
   return config
 }, function (error) {
-  console.log('请求前错误')
   return Promise.reject(error)
 })
 
 // 添加一个响应拦截器
 axios.interceptors.response.use(function (response) {
-  console.log('请求后')
   Vue.$vux.loading.hide()
   // console.log(response.data)
   return response.data
@@ -69,7 +66,9 @@ const home = {
   editName: '/device/edit/',
   scan: '/device/scan/',
   add: '/device/add/',
-  queryChangeInfo: '/device/queryChangeInfo/'
+  queryChangeInfo: '/device/queryChangeInfo/',
+  timedTaskInfo: '/device/timedTaskInfo/',
+  switchTimedTask: '/device/switchTimedTask/'
 }
 
 // function apiGet (url, query) {
@@ -137,6 +136,8 @@ export default {
   queryChangeInfo: (data) => apiPost(home.queryChangeInfo, data), //  通知
   getDeviceIrList: (data) => apiPost(user.getDeviceIrList, data), // 获取用户已学习的红外设备列表
   setDeviceScenes: (data) => apiPost(user.setDeviceScenes, data), // 场景控制接口
+  timedTaskInfo: (data) => apiPost(home.timedTaskInfo, data), // 场景控制接口
+  switchTimedTask: (data) => apiPost(home.switchTimedTask, data), // 场景控制接口
   apiGet: apiGet, // GET接口
   apiPost: apiPost // POST接口
 }

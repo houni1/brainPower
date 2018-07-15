@@ -2,22 +2,17 @@
   <div id="eleDetails">
     <Headers>
       <span slot="title">{{title}}</span>
-      <p slot="action" @click="moreBox(moreshow)" class="moreBox">
+      <p slot="action" @click="moreShow = !moreShow" class="moreBox">
         <img src="../../assets/images/tabbar/icon_more.png" alt="">
       </p>
     </Headers>
-    <div class="morelist" v-show="moreshow">
-      <div class="morecont">
-        <p @click="deleted">删除设备</p>
-      </div>
-      <div class="moreshow"></div>
-    </div>
-    <confirm v-model="iscancel"
-      :title="删除设备"
-      @on-cancel="onCancel"
-      @on-confirm="onConfirm">
-        <p style="text-align:center;">是否确定删除该设备</p>
-    </confirm>
+    <!--<div class="morelist" v-show="moreshow">-->
+      <!--<div class="morecont">-->
+        <!--<p @click="deleted">删除设备</p>-->
+      <!--</div>-->
+      <!--<div class="moreshow"></div>-->
+    <!--</div>-->
+
     <div class="contBox">
       <div class="box">
         <p class="title">{{deviceDetail.name}}</p>
@@ -70,10 +65,20 @@
         </div>
       </div>
     </div>
+    <actionsheet
+      v-model="moreShow"
+      :menus="menus"
+      @on-click-menu="clickMore" show-cancel></actionsheet>
+    <confirm v-model="iscancel"
+             title="删除设备"
+             @on-cancel="onCancel"
+             @on-confirm="onConfirm">
+      <p style="text-align:center;">是否确定删除该设备</p>
+    </confirm>
   </div>
 </template>
 <script>
-import { Confirm } from 'vux'
+import { Confirm, Popup, Actionsheet } from 'vux'
 import Headers from '../Common/Headers.vue'
 export default {
   name: 'eleDetails',
@@ -84,13 +89,18 @@ export default {
       deviceId: '',
       deviceDetail: {},
       flag: true,
-      moreshow: true,
-      iscancel: false
+      moreShow: false,
+      iscancel: false,
+      menus: {
+        menu1: '删除设备'
+      }
     }
   },
   components: {
     Headers,
-    Confirm
+    Confirm,
+    Popup,
+    Actionsheet
   },
   created () {
     console.log('getparams')
@@ -124,12 +134,18 @@ export default {
       console.log('on cancel')
     },
     onConfirm (msg) {
+      let _this = this
       let param = {
         deviceId: this.deviceId
       }
       // alert(param)
       this.$store.dispatch('deletedevice', param).then(function (res) {
         // alert(JSON.stringify(res))
+        if (res.status == 0) {
+          _this.$router.replace('/')
+        } else {
+          _this.$vux.toast.text(res.message, 'middle')
+        }
       })
     },
     deleted () {
@@ -183,6 +199,11 @@ export default {
       } else if (status == '0') {
         alert('设备离线，请检查设备')
         return false
+      }
+    },
+    clickMore (key) {
+      if (key == 'menu1') {
+        this.iscancel = true
       }
     }
   }

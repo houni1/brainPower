@@ -194,6 +194,25 @@ const actions = {
         reject(error)
       })
     })
+  },
+  // 添加设备
+  timedTaskInfo: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.timedTaskInfo(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
+  },
+  switchTimedTask: function ({commit}, data) {
+    return new Promise((resolve, reject) => {
+      API.switchTimedTask(data).then((res) => {
+        resolve(res)
+      }, (error) => {
+        reject(error)
+      })
+    })
   }
 }
 

@@ -235,7 +235,7 @@ export default {
       menus: {
         menu1: '删除设备',
         menu2: '红外重置',
-        menu3: '定时刷新'
+        menu3: '设备定时'
       },
       deleflag: true,
       num: 0,
@@ -567,6 +567,9 @@ export default {
       if (key == 'menu2') {
         this.reset()
         this.show1()
+      }
+      if (key == 'menu3') {
+        this.$router.push({path: '/timing', query: {deviceId: this.deviceDetail.id}})
       }
     }
   }
