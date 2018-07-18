@@ -17,7 +17,7 @@ axios.defaults.withCredentials = true
 // 添加一个请求拦截器
 axios.interceptors.request.use(function (config) {
   // console.log(config)
-  Vue.$vux.loading.show()
+  // Vue.$vux.loading.show()
   setTimeout(function () {
     Vue.$vux.loading.hide()
   }, 30000)
@@ -28,7 +28,7 @@ axios.interceptors.request.use(function (config) {
 
 // 添加一个响应拦截器
 axios.interceptors.response.use(function (response) {
-  Vue.$vux.loading.hide()
+  // Vue.$vux.loading.hide()
   // console.log(response.data)
   return response.data
 })

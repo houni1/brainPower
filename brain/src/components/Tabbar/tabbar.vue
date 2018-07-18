@@ -3,7 +3,7 @@
     <Headers>
       <div slot="title" class="tab_title">
         <div class="btnBox">
-          <p @click="show1" :class="{isActive: isActive1}">空调插座</p>
+          <p @click="show1" :class="{isActive: isActive1}">插座详情</p>
           <p @click="show2" :class="{isActive: isActive2}">空调遥控器</p>
         </div>
       </div>
@@ -258,6 +258,8 @@ export default {
   activated () {
     let _this = this
     _this.deviceId = this.$route.params.deviceId
+    _this.deleflag = true
+    _this.show1()
     let param = {
       deviceId: _this.deviceId
     }
@@ -296,19 +298,19 @@ export default {
         deviceId: this.deviceId
       }
       // alert(param)
+      this.$vux.loading.show()
       this.$store.dispatch('deletedevice', param).then(function (res) {
         if (res.status == 0) {
           // 生成定时器
-          var timer = setInterval(function () {
+          window.timer = setInterval(function () {
             if (_this.deleflag && _this.num < 5) {
               _this.clock()
               _this.num ++
             } else {
               // 清除定时器
-              window.clearInterval(timer)
+              window.clearInterval(window.timer)
+              _this.$vux.toast.text('删除失败', 'middle')
               _this.num = 0
-              _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
-              _this.$router.back()
             }
           }, 5000)
         } else {
@@ -318,13 +320,24 @@ export default {
     },
     // 定时器通知
     clock () {
+      let _this = this
       let params = {
         queryType: 'delete',
         deviceId: this.deviceId
       }
       this.$store.dispatch('queryChangeInfo', params).then((res) => {
         if (res.status == 0) {
-          this.deleflag = false
+          _this.deleflag = false
+          _this.num = 0
+          _this.$vux.loading.hide()
+          window.clearInterval(window.timer)
+          _this.$vux.toast.show({
+            text: '删除成功',
+            onHide () {
+              _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
+              _this.$router.push('/')
+            }
+          })
         }
       })
     },
@@ -341,6 +354,11 @@ export default {
       // alert(JSON.stringify(param))
       this.$store.dispatch('resetkt', param).then(function (res) {
         // alert(JSON.stringify(res))
+        _this.$vux.toast.show({
+          text: '重置成功',
+          width: '12em',
+          type: 'success'
+        })
         _this.deviceDetail.irMatchStatus = 0
       })
     },
@@ -499,7 +517,7 @@ export default {
             console.log(_this.learning)
             _this.learning = true
             // 循环调用查询
-            var timer3 = setInterval(function () {
+            window.timer3 = setInterval(function () {
               if (_this.deviceDetail.irMatchStatus == 0) {
                 _this.getcreated()
               } else {
@@ -508,7 +526,7 @@ export default {
                   text: '学习成功'
                 })
                 _this.show2()
-                window.clearInterval(timer3)
+                window.clearInterval(window.timer3)
                 _this.learning = false
               }
             }, 5000)
@@ -521,9 +539,9 @@ export default {
       }
     },
     reduce () {
-      if (Number(this.data.cTemp) - 1 < 0) {
+      if (Number(this.data.cTemp) - 1 < 16) {
         this.$vux.toast.show({
-          text: '温度不能小于0度',
+          text: '温度不能小于16度',
           width: '12em',
           type: 'warn'
         })

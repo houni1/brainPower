@@ -218,10 +218,15 @@ const actions = {
 
 const mutations = {
   [types.WIRINGLIST] (state, data) {
-    state.wiringList = data
+    console.log('uuuuuuuu', data)
+    if (data) {
+      state.wiringList = data.list
+    } else {
+      state.wiringList = []
+    }
   },
   editItemSwitchStatus (state, id) {
-    state.wiringList.list.forEach((item) => {
+    state.wiringList.forEach((item) => {
       if (item.id == id) {
         if (item.switchStatus == '0') {
           item.switchStatus = '1'

@@ -83,10 +83,30 @@ export default {
       this.$store.dispatch('login', param).then(function (res) {
         console.log(res)
         if (res.status == '0') {
-          _this.$router.push('/')
           _this.phone = ''
           _this.pass = ''
           window.localStorage.setItem('user', JSON.stringify(param))
+
+          // 更新首页内容
+          let params = {
+            memberId: res.data.list.memberId
+          }
+          _this.$store.dispatch('homeinit', params).then(function (res) {
+            if (res.data.list) {
+              let terminalId = res.data.list.terminalId
+              // alert(terminalId)
+              window.localStorage.setItem('terminalId', terminalId)
+              let regionId = res.data.list.regionId
+              window.localStorage.setItem('regionId', regionId)
+              let regionName = res.data.list.regionName
+              window.localStorage.setItem('regionName', regionName)
+              let accountId = res.data.list.accountId
+              window.localStorage.setItem('accountId', accountId)
+            }
+          })
+          setTimeout(() => {
+            _this.$router.push('/')
+          }, 200)
         } else if (res.status == 1) {
           alert(res.message)
         }

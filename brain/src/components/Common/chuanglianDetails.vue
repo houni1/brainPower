@@ -6,12 +6,6 @@
         <img src="../../assets/images/tabbar/icon_more.png" alt="">
       </p>
     </Headers>
-    <!--<div class="morelist" v-show="moreshow">-->
-      <!--<div class="morecont">-->
-        <!--<p @click="deleted">删除设备</p>-->
-      <!--</div>-->
-      <!--<div class="moreshow"></div>-->
-    <!--</div>-->
 
     <div class="contBox">
       <div class="box">
@@ -24,10 +18,17 @@
           <img src="../../assets/images/eledetails/icon_operation_nor.png" alt="">
           <span class="stateTxt">离线</span>
         </p>
-        <p class="switch" @click="isopenBtn(deviceDetail.id, deviceDetail.switchStatus, deviceDetail.onlineStatus)">
-          <img v-if="deviceDetail.switchStatus == '0'" src="../../assets/images/eledetails/switch_open.png" alt="">
-          <img v-else-if="deviceDetail.switchStatus == '1'" src="../../assets/images/eledetails/switch_close.png" alt="">
-        </p>
+        <!--<p class="switch" @click="isopenBtn(deviceDetail.id, deviceDetail.switchStatus, deviceDetail.onlineStatus)">-->
+          <!--<img v-if="deviceDetail.switchStatus == '0'" src="../../assets/images/eledetails/switch_open.png" alt="">-->
+          <!--<img v-else-if="deviceDetail.switchStatus == '1'" src="../../assets/images/eledetails/switch_close.png" alt="">-->
+        <!--</p>-->
+        <div>
+          <ul class="control-box">
+            <li @click="changeState(1)" class="up"></li>
+            <li @click="changeState(2)" class="pause"></li>
+            <li @click="changeState(3)" class="down"></li>
+          </ul>
+        </div>
         <!-- <p class="switch" @click="isopen(flag)">
           <img v-if="flag" src="../../assets/images/eledetails/switch_open.png" alt="">
           <img v-else src="../../assets/images/eledetails/switch_close.png" alt="">
@@ -78,13 +79,13 @@
   </div>
 </template>
 <script>
-import { Confirm, Popup, Actionsheet } from 'vux'
+import { Confirm, Popup, Actionsheet, ButtonTab, ButtonTabItem } from 'vux'
 import Headers from '../Common/Headers.vue'
 export default {
   name: 'eleDetails',
   data () {
     return {
-      title: '详情',
+      title: '电器详情',
       // isopen: true,
       deviceId: '',
       deviceDetail: {},
@@ -93,14 +94,17 @@ export default {
       iscancel: false,
       menus: {
         menu1: '删除设备'
-      }
+      },
+      switchFlag: ''
     }
   },
   components: {
     Headers,
     Confirm,
     Popup,
-    Actionsheet
+    Actionsheet,
+    ButtonTab,
+    ButtonTabItem
   },
   created () {
     console.log('getparams')
@@ -205,6 +209,9 @@ export default {
       if (key == 'menu1') {
         this.iscancel = true
       }
+    },
+    changeState (num) {
+      this.switchFlag = num
     }
   }
 }
@@ -350,5 +357,13 @@ export default {
     }
   }
 }
+.control-box {border: 1px solid #ddd;width: 80px;margin: 0 auto;}
+.control-box li{width: 50px;height: 50px;margin: 0 auto;background: #faf;}
+.control-box .up {background: url("../../assets/images/up_nor.png")center no-repeat;background-size: 80%;}
+.control-box .pause {background: url("../../assets/images/parse_nor.png")center no-repeat;background-size: 80%;}
+.control-box .down {background: url("../../assets/images/down.png")center no-repeat;background-size: 80%;}
+.control-box .up.active {background: url("../../assets/images/up_pre.png")center no-repeat;background-size: 80%;}
+.control-box .pause.active {background: url("../../assets/images/parse_pre.png")center no-repeat;background-size: 80%;}
+.control-box .down.active {background: url("../../assets/images/down_pre.png")center no-repeat;background-size: 80%;}
 </style>
 

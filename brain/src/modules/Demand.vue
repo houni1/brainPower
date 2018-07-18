@@ -255,7 +255,7 @@
           terminalId: this.infoList.terminalId,
           regionId: this.infoList.regionId,
           key: this.infoList.key,
-          operatType: isopen ? '1' : '0',
+          operatType: isopen ? '0' : '1',
           scenesType: this.getScenesType(),
           rh: this.humidity,
           cTemp: this.temperature

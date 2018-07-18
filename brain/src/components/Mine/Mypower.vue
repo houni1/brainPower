@@ -113,7 +113,9 @@ export default {
         console.log(res)
         // alert(res.message)
         _this.data = {}
-        _this.$router.back()
+        localStorage.terminalId = 0
+        _this.$store.dispatch('wiringList', {terminalId: 0})
+        _this.$router.replace('/')
       })
     },
     filterCity (data) {

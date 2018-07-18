@@ -5,9 +5,10 @@
     </Headers>
     <section>
       <group>
+        <load-more tip="正在扫描，请稍后..." v-if="scanTxt"></load-more>
         <cell :title="item.deviceType" :value="item.deviceMacId" is-link  v-for="item in deviceList" @click.native="sureShow(item)"></cell>
       </group>
-      <div class="none-wifi" v-if="deviceList.length < 1">
+      <div class="none-wifi" v-if="noneList">
         <img src="../../assets/images/home/none-wifi.png" alt="">
         <p>没有发现任何设备</p>
       </div>
@@ -23,7 +24,7 @@
 
 <script>
   import Headers from '../Common/Headers.vue'
-  import { Group, Cell, CellBox, Confirm } from 'vux'
+  import { Group, Cell, CellBox, Confirm, LoadMore } from 'vux'
   export default {
     name: 'wifiList',
     components: {
@@ -31,7 +32,8 @@
       Group,
       Cell,
       CellBox,
-      Confirm
+      Confirm,
+      LoadMore
     },
     data () {
       return {
@@ -42,13 +44,20 @@
         deleflag: true,
         num: 0,
         num2: 0,
-        deleflag2: true
+        deleflag2: true,
+        scanTxt: true,
+        noneList: false
       }
     },
     activated: function () {
       let _this = this
+      this.deviceList = []
+      this.scanTxt = true
+      this.deleflag = true
+      this.deleflag2 = true
       this.$store.dispatch('scan', {terminalId: window.localStorage.getItem('terminalId')}).then((res) => {
         if (res.status == 0) {
+          console.log('111')
           // 生成定时器
           var timer = setInterval(function () {
             if (_this.deleflag && _this.num < 5) {
@@ -68,6 +77,7 @@
     methods: {
       onConfirm () {
         let _this = this
+        this.$vux.loading.show()
         let params = {
           terminalMac: this.terminalMac,
           deviceMacId: this.saveData.deviceMacId,
@@ -76,7 +86,7 @@
         this.$store.dispatch('add', params).then((res) => {
           if (res.status == 0) {
             // 生成定时器
-            var timer2 = setInterval(function () {
+            window.timer2 = setInterval(function () {
               if (_this.deleflag2 && _this.num2 < 5) {
                 _this.clock('add')
                 _this.num2 ++
@@ -87,10 +97,8 @@
                     text: '绑定失败'
                   })
                 }
-                window.clearInterval(timer2)
+                window.clearInterval(window.timer2)
                 _this.num2 = 0
-                // _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
-                // _this.$router.back()
               }
             }, 5000)
           } else {
@@ -106,6 +114,7 @@
       },
       // 定时器通知
       clock (type) {
+        let _this = this
         let params = {}
         if (type == 'scan') {
           params = {
@@ -123,19 +132,31 @@
         this.$store.dispatch('queryChangeInfo', params).then((res) => {
           if (res.status == 0) {
             if (type == 'add') {
-              this.deleflag2 = false
-              this.$vux.toast.show({
+              _this.deleflag2 = false
+              _this.num2 = 0
+              _this.$vux.loading.hide()
+              _this.$vux.toast.show({
                 text: '添加成功',
                 onHide () {
-                  this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
-                  this.$router.back()
+                  _this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
+                  _this.$router.push('/')
                 }
               })
             } else {
-              this.deviceList = res.data.list.devicelist
-              this.terminalMac = res.data.list.terminalMac
-              this.deleflag = false
+              _this.deviceList = res.data.list.devicelist
+              if (_this.deviceList.length < 1) {
+                _this.noneList = true
+              }
+              _this.scanTxt = false
+              _this.terminalMac = res.data.list.terminalMac
+              _this.deleflag = false
             }
+          }
+          if (res.status != 0 && type == 'add') {
+            _this.$vux.toast.show({
+              text: '绑定失败'
+            })
+            window.clearInterval(window.timer2)
           }
         })
       }

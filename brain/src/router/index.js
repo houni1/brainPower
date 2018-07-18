@@ -14,6 +14,7 @@ import Demand from '@/modules/Demand.vue'
 import Demo from '@/modules/Demo.vue'
 // 电器详情
 import eleDetails from '../components/Common/eleDetails.vue'
+import chuanglianDetails from '../components/Common/chuanglianDetails.vue'
 // tabbar
 import tabbar from '../components/Tabbar/tabbar.vue'
 import timing from '../components/Tabbar/timing.vue'
@@ -63,11 +64,11 @@ const routes = [{
   }, {
     name: 'Demand',
     path: '/Demand',
-    component: Demand
+    component: Demo
   }, {
     name: 'Demo',
     path: '/Demo',
-    component: Demo
+    component: Demand
   }, {
     name: 'Mine',
     path: '/Mine',
@@ -173,6 +174,10 @@ const routes = [{
   name: 'addTiming',
   path: '/addTiming',
   component: addTiming
+}, {
+  name: 'chuanglianDetails',
+  path: '/chuanglianDetails',
+  component: chuanglianDetails
 }]
 export default new Router({
   routes

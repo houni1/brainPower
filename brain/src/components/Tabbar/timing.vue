@@ -12,7 +12,7 @@
               <p>操作：{{item.runStatus | actionFilter}}</p>
             </div>
             <div class="right">
-              <x-switch title="" @on-change="change(item)"></x-switch>
+              <x-switch title="" @on-change="change(item)" v-model="item.runStatus == 1"></x-switch>
             </div>
         </li>
       </ul>
@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     addTiming () {
-      this.$router.push('/addTiming')
+      this.$router.push({path: '/addTiming', query: {deviceId: this.$route.query.deviceId}})
     },
     initData () {
       let param = {
@@ -58,21 +58,31 @@ export default {
         }
       })
     },
-    change (val, item) {
+    change (item) {
       let params = {
-        operateType: item.switchStatus == 0 ? 2 : 3, // 2打开 3关闭
+        operateType: item.runStatus == 0 ? 2 : 3, // 2打开 3关闭
         deviceId: this.$route.query.deviceId,
         memberId: localStorage.memberId,
         timedTaskId: item.id
       }
       this.$store.dispatch('switchTimedTask', params).then((res) => {
+        if (res.status == 0) {
+          if (item.switchStatus == 0) {
+            item.switchStatus = 1
+          } else {
+            item.switchStatus = 0
+          }
+        } else {
+          this.$vux.toast.show({
+            text: res.message,
+            width: '12em',
+            type: 'warn'
+          })
+        }
       })
     },
-    deleteRemind (item) {
-      // TODO 删除
-    },
     goDetail (item) {
-      this.$router.push({path: '/addTiming', query: {detail: item, flag: 'detail'}})
+      this.$router.push({path: '/addTiming', query: {detail: item, flag: 'detail', deviceId: this.$route.query.deviceId}})
     }
   },
   filters: {

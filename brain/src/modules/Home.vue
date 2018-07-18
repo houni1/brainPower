@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="homewrap" :style="{'padding-top': isPhoneX?'44px': (isiOS?'20px':'0')}">
-      <pull-to :top-load-method="refresh">
+      <pull-to :top-load-method="refresh" :bottom-load-method="refresh">
         <div class="homeBox">
           <div class="box">
             <div class="temperatureList">
@@ -101,6 +101,7 @@ export default {
     console.log(user)
     if (user) {
       this.$router.push('/')
+      this.homeinit()
       // 定时刷新主页 30秒刷新
       setInterval(() => {
         this.homeinit()
@@ -136,6 +137,11 @@ export default {
    */
   activated: function () {
     this.homeinit()
+    setTimeout(() => {
+      // this.homeinit()
+      // 触发设备列表更新
+      this.$store.dispatch('wiringList', {terminalId: window.localStorage.getItem('terminalId')})
+    }, 500)
   },
   /**
    * 组件内方法
@@ -187,20 +193,10 @@ export default {
     // 扫描二维码
     scan () {
       console.log('点击扫描按钮')
-      // this.$router.push('/sweepcode')
       var dsBridge = require('dsbridge')
-      console.log(dsBridge)
-      // let _this = this
-      // console.log(window.location.href)
-      // let macid = '1c1cfd1ebde3'
-      // window.location.href += 'terminal?macId=' + macid
       dsBridge.call('startScan', 'startScan', function (v) {
-        // alert(v)
-        console.log(v)
         let macid = v
-        console.log(macid)
         window.location.href += 'terminal?macId=' + macid
-        // _this.$router.push({name: 'terminal', params: {macId: macid}})
       })
       dsBridge.register('startScan', function (l, r) {
         console.log('l+r')
